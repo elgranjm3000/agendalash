@@ -1,6 +1,5 @@
 export const CURRENCIES: { code: string; label: string }[] = [
   { code: 'USD', label: 'USD — Dólar estadounidense' },
-  { code: 'VES', label: 'VES — Bolívar venezolano' },
   { code: 'EUR', label: 'EUR — Euro' },
   { code: 'MXN', label: 'MXN — Peso mexicano' },
   { code: 'ARS', label: 'ARS — Peso argentino' },

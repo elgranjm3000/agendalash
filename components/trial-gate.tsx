@@ -39,7 +39,7 @@ export function TrialGate({ children }: { children: ReactNode }) {
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Tu prueba finalizó</h1>
           <p className="text-gray-600 mb-6">
             El período de prueba de 7 días de <strong>{user.organizationName}</strong> terminó.
-            Solicitá tu licencia para seguir usando MediControl — tus datos están a salvo y
+            Solicitá tu licencia para seguir usando AgendaLash — tus datos están a salvo y
             se conservan intactos.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">

@@ -19,6 +19,8 @@ import {
   Menu,
   Activity,
   Boxes,
+  Sparkles,
+  Bell,
   Hospital,
   ShieldCheck,
   User as UserIcon,
@@ -78,6 +80,24 @@ const navItems = [
     label: 'nav.inventory',
     icon: Boxes,
     roles: ['admin', 'nurse'],
+  },
+  {
+    href: '/insumos',
+    label: 'nav.supplies',
+    icon: Sparkles,
+    roles: ['admin', 'super_admin'],
+  },
+  {
+    href: '/recetas',
+    label: 'nav.recipes',
+    icon: ClipboardList,
+    roles: ['admin', 'nurse', 'super_admin'],
+  },
+  {
+    href: '/alertas',
+    label: 'nav.alerts',
+    icon: Bell,
+    roles: ['admin', 'super_admin'],
   },
   {
     href: '/records',
@@ -143,8 +163,8 @@ function UserAvatar({ user, size = 'sm' }: { user: NonNullable<ReturnType<typeof
     );
   }
   return (
-    <div className={cn(dimension, 'bg-teal-100 rounded-full flex items-center justify-center shrink-0')}>
-      <span className="text-sm font-medium text-teal-700">
+    <div className={cn(dimension, 'bg-rose-100 rounded-full flex items-center justify-center shrink-0')}>
+      <span className="text-sm font-medium text-rose-700">
         {user.firstName[0]}{user.lastName[0]}
       </span>
     </div>
@@ -165,8 +185,8 @@ export function Navigation() {
     cn(
       'flex items-center gap-2 rounded-md text-sm font-medium transition-colors',
       isActive
-        ? 'text-teal-600 bg-teal-50'
-        : 'text-gray-600 hover:text-teal-600 hover:bg-gray-50'
+        ? 'text-rose-600 bg-rose-50'
+        : 'text-gray-600 hover:text-rose-600 hover:bg-gray-50'
     );
 
   const closeAndNavigate = () => setMobileOpen(false);
@@ -180,7 +200,7 @@ export function Navigation() {
           onClick={() => setLang(l)}
           className={cn(
             'px-2 py-1.5 text-xs font-semibold uppercase transition-colors min-h-[32px]',
-            lang === l ? 'bg-teal-600 text-white' : 'text-gray-500 hover:bg-gray-50'
+            lang === l ? 'bg-rose-600 text-white' : 'text-gray-500 hover:bg-gray-50'
           )}
         >
           {l}
@@ -204,8 +224,8 @@ export function Navigation() {
               <SheetContent side="left" className="w-72 p-0">
                 <SheetHeader className="px-4 py-4 border-b border-gray-100">
                   <SheetTitle className="flex items-center gap-2 text-base">
-                    <Stethoscope className="h-5 w-5 text-teal-600" />
-                    MediControl
+                    <Stethoscope className="h-5 w-5 text-rose-600" />
+                    AgendaLash
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col h-[calc(100%-5rem)]">
@@ -249,8 +269,8 @@ export function Navigation() {
               </SheetContent>
             </Sheet>
             <Link href="/panel" className="flex items-center gap-2">
-              <Stethoscope className="h-7 w-7 text-teal-600" />
-              <span className="text-lg font-bold text-gray-900">MediControl</span>
+              <Stethoscope className="h-7 w-7 text-rose-600" />
+              <span className="text-lg font-bold text-gray-900">AgendaLash</span>
             </Link>
           </div>
           <div className="flex items-center gap-1 shrink-0">
@@ -284,8 +304,8 @@ export function Navigation() {
       {/* Sidebar fija (desktop) */}
       <aside className="hidden lg:flex fixed inset-y-0 left-0 w-60 flex-col bg-white border-r border-gray-200 z-50">
         <div className="flex items-center gap-2 h-16 px-5 border-b border-gray-100 shrink-0">
-          <Stethoscope className="h-7 w-7 text-teal-600" />
-          <span className="text-lg font-bold text-gray-900">MediControl</span>
+          <Stethoscope className="h-7 w-7 text-rose-600" />
+          <span className="text-lg font-bold text-gray-900">AgendaLash</span>
         </div>
         <nav className="flex-1 overflow-y-auto p-3 space-y-1">
           {allowedNavItems.map((item) => {

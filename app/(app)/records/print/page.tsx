@@ -43,13 +43,13 @@ function PrintRecordContent() {
         return (
           <div className="text-gray-900">
             {/* Encabezado */}
-            <div className="flex items-start justify-between border-b-2 border-teal-600 pb-6">
+            <div className="flex items-start justify-between border-b-2 border-rose-600 pb-6">
               <div className="flex items-center gap-3">
                 {orgLogo && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={orgLogo} alt="" className="h-12 w-auto max-w-[120px] object-contain" />
                 )}
-                <h1 className="text-2xl font-bold text-teal-700 tracking-tight">{orgName || 'MediControl'}</h1>
+                <h1 className="text-2xl font-bold text-rose-700 tracking-tight">{orgName || 'AgendaLash'}</h1>
               </div>
               <div>
                 <p className="mt-1 text-sm text-gray-500">Historia Clínica</p>
@@ -157,7 +157,7 @@ function PrintRecordContent() {
             )}
 
             <div className="mt-12 border-t border-gray-200 pt-4 text-xs text-gray-400">
-              Generado por MediControl — Documento confidencial protegido por secreto médico.
+              Generado por AgendaLash — Documento confidencial protegido por secreto médico.
             </div>
           </div>
         );

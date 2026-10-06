@@ -155,7 +155,7 @@ export default function NewRecordPage() {
                     value={doctorId}
                     onChange={(e) => setDoctorId(e.target.value)}
                     disabled={user?.role === 'doctor'}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600"
                   >
                     <option value="">Seleccionar…</option>
                     {doctors.map((d) => (
@@ -174,7 +174,7 @@ export default function NewRecordPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <HeartPulse className="h-5 w-5 text-teal-600" />
+                <HeartPulse className="h-5 w-5 text-rose-600" />
                 Signos vitales
               </CardTitle>
               <CardDescription>Dejalos en blanco los que no correspondan.</CardDescription>

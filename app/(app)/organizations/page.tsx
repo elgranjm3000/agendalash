@@ -26,7 +26,7 @@ import { OrganizationType } from '@/lib/types';
 
 const typeConfig: Record<OrganizationType, { label: string; icon: typeof Hospital; badge: string }> = {
   hospital: { label: 'Hospital', icon: Hospital, badge: 'bg-red-100 text-red-800' },
-  clinic: { label: 'Clínica', icon: Building, badge: 'bg-teal-100 text-teal-800' },
+  clinic: { label: 'Clínica', icon: Building, badge: 'bg-rose-100 text-rose-800' },
   private_doctor: { label: 'Doctor Privado', icon: Stethoscope, badge: 'bg-emerald-100 text-emerald-800' },
 };
 
@@ -83,7 +83,7 @@ export default function OrganizationsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <Hospital className="h-8 w-8 text-teal-600" />
+            <Hospital className="h-8 w-8 text-rose-600" />
             Organizaciones
           </h1>
           <p className="text-gray-600 mt-1">
@@ -175,8 +175,8 @@ export default function OrganizationsPage() {
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center shrink-0">
-                        <TypeIcon className="h-5 w-5 text-teal-600" />
+                      <div className="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center shrink-0">
+                        <TypeIcon className="h-5 w-5 text-rose-600" />
                       </div>
                       <CardTitle className="text-lg truncate">{org.name}</CardTitle>
                     </div>

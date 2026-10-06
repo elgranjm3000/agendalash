@@ -26,7 +26,7 @@ import { useAuth } from '@/contexts/auth-context';
 
 const statusColors = {
   active: 'bg-emerald-100 text-emerald-800',
-  completed: 'bg-teal-100 text-teal-800',
+  completed: 'bg-rose-100 text-rose-800',
   cancelled: 'bg-red-100 text-red-800',
 };
 
@@ -90,7 +90,7 @@ export default function PrescriptionsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <FileText className="h-8 w-8 text-teal-600" />
+            <FileText className="h-8 w-8 text-rose-600" />
             Prescripciones Electrónicas
           </h1>
           <p className="text-gray-600 mt-1">

@@ -6,7 +6,6 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { PrintDocument } from '@/components/print-document';
 import { useOrgSettings } from '@/hooks/use-org-settings';
-import { useBcvRate, convert } from '@/hooks/use-bcv-rate';
 import { formatMoney } from '@/lib/format';
 import { apiGetOne } from '@/lib/api';
 import { Invoice } from '@/lib/types';
@@ -22,9 +21,6 @@ export default function PrintInvoicePage() {
   const { t } = useLang();
   const params = useParams<{ id: string }>();
   const { orgName, currency, orgLogo } = useOrgSettings();
-  const dualCurrency = currency === 'USD' || currency === 'VES';
-  const { rate: bcvRate, updatedAt: bcvUpdatedAt } = useBcvRate(dualCurrency);
-  const otherCurrency = currency === 'VES' ? 'USD' : currency === 'USD' ? 'VES' : null;
 
   const fetchDoc = () => apiGetOne<Invoice>('invoices', params.id);
 
@@ -41,13 +37,13 @@ export default function PrintInvoicePage() {
         return (
           <div className="text-gray-900">
             {/* Encabezado */}
-            <div className="flex items-start justify-between border-b-2 border-teal-600 pb-6">
+            <div className="flex items-start justify-between border-b-2 border-rose-600 pb-6">
               <div className="flex items-center gap-3">
                 {orgLogo && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={orgLogo} alt="" className="h-12 w-auto max-w-[120px] object-contain" />
                 )}
-                <h1 className="text-2xl font-bold text-teal-700 tracking-tight">{orgName || 'MediControl'}</h1>
+                <h1 className="text-2xl font-bold text-rose-700 tracking-tight">{orgName || 'AgendaLash'}</h1>
               </div>
               <div>
                 <p className="mt-1 text-sm text-gray-500">{t('Documento de factura')}</p>
@@ -127,30 +123,10 @@ export default function PrintInvoicePage() {
                   <span className="text-gray-500">{t('Impuestos')}</span>
                   <span className="tabular-nums">{money(invoice.tax)}</span>
                 </div>
-                <div className="flex justify-between border-t-2 border-teal-600 pt-2 text-base font-bold">
+                <div className="flex justify-between border-t-2 border-rose-600 pt-2 text-base font-bold">
                   <span>{t('Total')}</span>
-                  <span className="tabular-nums text-teal-700">{money(invoice.total)}</span>
+                  <span className="tabular-nums text-rose-700">{money(invoice.total)}</span>
                 </div>
-
-                {/* Equivalencia dual USD/Bs según tasa BCV */}
-                {dualCurrency && otherCurrency && (
-                  <div className="mt-3 rounded-md bg-gray-50 border border-gray-200 p-3 text-xs text-gray-600 space-y-1">
-                    <div className="flex justify-between">
-                      <span>
-                        {currency === 'VES' ? 'Equivalente en dólares (USD)' : 'Equivalente en bolívares (VES)'}
-                      </span>
-                      <span className="font-semibold tabular-nums text-gray-900">
-                        {formatMoney(convert(Number(invoice.total), currency as 'USD' | 'VES', bcvRate), otherCurrency)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-gray-400">
-                      <span>Tasa BCV</span>
-                      <span className="tabular-nums">
-                        {bcvRate ? `1 USD = ${bcvRate.toLocaleString('es-VE', { maximumFractionDigits: 2 })} Bs` : 'no disponible'}
-                      </span>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -163,7 +139,7 @@ export default function PrintInvoicePage() {
 
             {/* Pie */}
             <div className="mt-16 border-t border-gray-200 pt-4 flex items-center justify-between text-xs text-gray-400">
-              <span>{t('Generado por MediControl')}</span>
+              <span>{t('Generado por AgendaLash')}</span>
               <span>{t('Documento válido como comprobante de la prestación facturada.')}</span>
             </div>
           </div>

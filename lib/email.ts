@@ -14,7 +14,7 @@ export interface Email {
  */
 export async function sendEmail(email: Email, meta?: { organizationId?: string | null }): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM || 'MediControl <onboarding@resend.dev>';
+  const from = process.env.EMAIL_FROM || 'AgendaLash <onboarding@resend.dev>';
 
   if (!key) {
     // Sin configurar: queda registrado en auditoría para no perder el aviso

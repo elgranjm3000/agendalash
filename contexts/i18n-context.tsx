@@ -32,11 +32,68 @@ const dict: Record<Lang, Record<string, string>> = {
     'role.receptionist': 'Recepcionista',
     // Login
     'login.title': 'Iniciar Sesión',
-    'login.subtitle': 'Accedé a tu cuenta de MediControl',
+    'login.subtitle': 'Accedé a tu cuenta de AgendaLash',
     'login.email': 'Email',
     'login.password': 'Contraseña',
     'login.submit': 'Ingresar',
     'login.invalid': 'Email o contraseña incorrectos',
+    // Insumos y recetas
+    'nav.supplies': 'Insumos',
+    'nav.recipes': 'Recetas',
+    'nav.alerts': 'Alertas',
+    'supplies.title': 'Insumos de pestañas',
+    'supplies.subtitle': 'Stock del salón y proyección de cobertura por receta',
+    'supplies.new': 'Nuevo insumo (SKU)',
+    'supplies.name': 'Nombre',
+    'supplies.unit': 'Unidad',
+    'supplies.units': 'Unidades',
+    'supplies.stock': 'Stock',
+    'supplies.minStock': 'Stock mínimo',
+    'supplies.supplier': 'Proveedor',
+    'supplies.catalog': 'Catálogo del proveedor (depósito)',
+    'supplies.salonCoverage': 'Cobertura de tu stock',
+    'supplies.weeklyUsage': 'Uso semanal:',
+    'supplies.sessionsCovered': '{n} sesiones cubiertas',
+    'supplies.daysLeft': '{n} días restantes',
+    'supplies.daysShort': 'días',
+    'supplies.noUsage': 'Sin uso proyectado (sin receta asociada)',
+    'supplies.noCoverage': 'Creá una receta de tratamiento para proyectar la cobertura de tus insumos.',
+    'supplies.noProducts': 'Todavía no hay insumos en el catálogo.',
+    'supplies.alertTitle': '{n} insumo(s) por agotarse:',
+    'supplies.requiredFields': 'SKU y nombre son obligatorios',
+    'supplies.created': 'Insumo creado',
+    'supplies.updated': 'Insumo actualizado',
+    'supplies.deleted': 'Insumo eliminado',
+    'supplies.confirmDelete': '¿Eliminar el insumo {sku}?',
+    'supplies.actions': 'Acciones',
+    'common.cancel': 'Cancelar',
+    'common.save': 'Guardar',
+    'recipes.title': 'Recetas de tratamiento',
+    'recipes.subtitle': 'Cuánto consume cada servicio de tus insumos',
+    'recipes.new': 'Nueva receta',
+    'recipes.name': 'Nombre del servicio',
+    'recipes.namePlaceholder': 'Lifting de pestañas',
+    'recipes.servicesPerWeek': 'Servicios por semana',
+    'recipes.items': 'Consumo por servicio',
+    'recipes.noItems': 'Sin insumos asignados todavía.',
+    'recipes.selectItem': 'Elegir insumo…',
+    'recipes.addItem': 'Agregar insumo',
+    'recipes.active': 'Receta activa',
+    'recipes.activeBadge': 'Activa',
+    'recipes.inactiveBadge': 'Inactiva',
+    'recipes.empty': 'Creá tu primera receta para proyectar el consumo de insumos.',
+    'recipes.nameRequired': 'El nombre del servicio es obligatorio',
+    'recipes.created': 'Receta creada',
+    'recipes.updated': 'Receta actualizada',
+    'recipes.deleted': 'Receta eliminada',
+    'recipes.confirmDelete': '¿Eliminar la receta {name}?',
+    'alerts.title': 'Alertas de stock',
+    'alerts.subtitle': 'Insumos con cobertura proyectada bajo el umbral',
+    'alerts.allGood': 'Todo en orden: ningún insumo bajo el umbral de cobertura.',
+    'alerts.okSection': 'Con buena cobertura',
+    'alerts.supplierSection': 'Depósito del proveedor (toda la red)',
+    'alerts.networkUsage': 'Uso red/sem.',
+    'alerts.coverage': 'Cobertura',
   },
   en: {
     'nav.dashboard': 'Dashboard',
@@ -63,11 +120,68 @@ const dict: Record<Lang, Record<string, string>> = {
     'role.nurse': 'Nurse',
     'role.receptionist': 'Receptionist',
     'login.title': 'Sign In',
-    'login.subtitle': 'Access your MediControl account',
+    'login.subtitle': 'Access your AgendaLash account',
     'login.email': 'Email',
     'login.password': 'Password',
     'login.submit': 'Sign In',
     'login.invalid': 'Incorrect email or password',
+    // Supplies & recipes
+    'nav.supplies': 'Supplies',
+    'nav.recipes': 'Recipes',
+    'nav.alerts': 'Alerts',
+    'supplies.title': 'Lash supplies',
+    'supplies.subtitle': 'Salon stock and coverage projection per recipe',
+    'supplies.new': 'New supply (SKU)',
+    'supplies.name': 'Name',
+    'supplies.unit': 'Unit',
+    'supplies.units': 'Units',
+    'supplies.stock': 'Stock',
+    'supplies.minStock': 'Min stock',
+    'supplies.supplier': 'Supplier',
+    'supplies.catalog': 'Supplier catalog (warehouse)',
+    'supplies.salonCoverage': 'Your stock coverage',
+    'supplies.weeklyUsage': 'Weekly usage:',
+    'supplies.sessionsCovered': '{n} sessions covered',
+    'supplies.daysLeft': '{n} days left',
+    'supplies.daysShort': 'days',
+    'supplies.noUsage': 'No projected usage (no recipe linked)',
+    'supplies.noCoverage': 'Create a treatment recipe to project your supplies coverage.',
+    'supplies.noProducts': 'No supplies in the catalog yet.',
+    'supplies.alertTitle': '{n} supply(ies) running low:',
+    'supplies.requiredFields': 'SKU and name are required',
+    'supplies.created': 'Supply created',
+    'supplies.updated': 'Supply updated',
+    'supplies.deleted': 'Supply deleted',
+    'supplies.confirmDelete': 'Delete supply {sku}?',
+    'supplies.actions': 'Actions',
+    'common.cancel': 'Cancel',
+    'common.save': 'Save',
+    'recipes.title': 'Treatment recipes',
+    'recipes.subtitle': 'How much of your supplies each service consumes',
+    'recipes.new': 'New recipe',
+    'recipes.name': 'Service name',
+    'recipes.namePlaceholder': 'Lash lift',
+    'recipes.servicesPerWeek': 'Services per week',
+    'recipes.items': 'Consumption per service',
+    'recipes.noItems': 'No supplies assigned yet.',
+    'recipes.selectItem': 'Choose supply…',
+    'recipes.addItem': 'Add supply',
+    'recipes.active': 'Active recipe',
+    'recipes.activeBadge': 'Active',
+    'recipes.inactiveBadge': 'Inactive',
+    'recipes.empty': 'Create your first recipe to project supply usage.',
+    'recipes.nameRequired': 'Service name is required',
+    'recipes.created': 'Recipe created',
+    'recipes.updated': 'Recipe updated',
+    'recipes.deleted': 'Recipe deleted',
+    'recipes.confirmDelete': 'Delete recipe {name}?',
+    'alerts.title': 'Stock alerts',
+    'alerts.subtitle': 'Supplies with projected coverage below threshold',
+    'alerts.allGood': 'All good: no supply below the coverage threshold.',
+    'alerts.okSection': 'Well covered',
+    'alerts.supplierSection': 'Supplier warehouse (whole network)',
+    'alerts.networkUsage': 'Network use/wk',
+    'alerts.coverage': 'Coverage',
   },
 };
 
@@ -207,7 +321,7 @@ const esEn: Record<string, string> = {
   'Precio unit.': 'Unit price',
   'Importe': 'Amount',
   'Descripción': 'Description',
-  'Generado por MediControl': 'Generated by MediControl',
+  'Generado por AgendaLash': 'Generated by AgendaLash',
   'Documento válido como comprobante de la prestación facturada.': 'Valid document as proof of the invoiced service.',
   'Gestión de Usuarios': 'User Management',
   'Administra los usuarios y roles del sistema': 'Manage system users and roles',
@@ -261,7 +375,7 @@ const esEn: Record<string, string> = {
   'Perfil actualizado correctamente': 'Profile updated successfully'
 };
 
-const I18nContext = createContext<{ lang: Lang; setLang: (l: Lang) => void; t: (key: string) => string } | undefined>(undefined);
+const I18nContext = createContext<{ lang: Lang; setLang: (l: Lang) => void; t: (key: string, params?: Record<string, string | number>) => string } | undefined>(undefined);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>('es');
@@ -276,10 +390,14 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('medical_lang', l);
   };
 
-  const t = (key: string) => {
-    if (dict[lang][key]) return dict[lang][key];
-    if (lang === 'en' && esEn[key]) return esEn[key];
-    return key;
+  const t = (key: string, params?: Record<string, string | number>) => {
+    let text = dict[lang][key] ?? (lang === 'en' ? esEn[key] : undefined) ?? key;
+    if (params) {
+      for (const [k, v] of Object.entries(params)) {
+        text = text.replaceAll(`{${k}}`, String(v));
+      }
+    }
+    return text;
   };
 
   return (

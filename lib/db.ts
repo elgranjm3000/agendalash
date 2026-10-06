@@ -163,13 +163,6 @@ export function ensureDb(): Promise<void> {
         // la columna ya existe
       }
 
-      // Tasa de cambio BCV (USD→VES) con respaldo local
-      await db.execute(`CREATE TABLE IF NOT EXISTS exchange_rates (
-        code TEXT PRIMARY KEY,
-        rate REAL NOT NULL,
-        "updatedAt" TEXT NOT NULL
-      )`);
-
       // Log de auditoría: sesiones y operaciones por usuario
       await db.execute(`CREATE TABLE IF NOT EXISTS audit_log (
         id TEXT PRIMARY KEY,
@@ -288,6 +281,64 @@ export function ensureDb(): Promise<void> {
         "createdAt" TEXT NOT NULL,
         "updatedAt" TEXT NOT NULL
       )`);
+
+      // Receta de tratamiento asociada a la cita (para descontar insumos al completarla)
+      try {
+        await db.execute(`ALTER TABLE appointments ADD COLUMN "recipeId" TEXT`);
+      } catch {
+        // la columna ya existe
+      }
+
+      // Catálogo global de insumos de pestañas (SKU del proveedor / dueño del SaaS)
+      await db.execute(`CREATE TABLE IF NOT EXISTS lash_products (
+        id TEXT PRIMARY KEY,
+        sku TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        unit TEXT NOT NULL,
+        stock REAL NOT NULL DEFAULT 0,
+        "minStock" REAL NOT NULL DEFAULT 0,
+        cost REAL,
+        supplier TEXT,
+        "createdAt" TEXT NOT NULL,
+        "updatedAt" TEXT NOT NULL
+      )`);
+
+      // Recetas de tratamiento: cuánto consume cada servicio del salón
+      await db.execute(`CREATE TABLE IF NOT EXISTS treatment_recipes (
+        id TEXT PRIMARY KEY,
+        "organizationId" TEXT,
+        name TEXT NOT NULL,
+        "servicesPerWeek" REAL NOT NULL DEFAULT 0,
+        active INTEGER NOT NULL DEFAULT 1,
+        "createdAt" TEXT NOT NULL,
+        "updatedAt" TEXT NOT NULL
+      )`);
+
+      // Ítems de una receta: insumo del salón + link opcional al SKU del proveedor
+      await db.execute(`CREATE TABLE IF NOT EXISTS recipe_items (
+        id TEXT PRIMARY KEY,
+        "recipeId" TEXT NOT NULL,
+        "inventoryItemId" TEXT,
+        "productId" TEXT,
+        "quantityPerService" REAL NOT NULL,
+        "createdAt" TEXT NOT NULL,
+        "updatedAt" TEXT NOT NULL
+      )`);
+      await db.execute(`CREATE INDEX IF NOT EXISTS idx_recipe_items_recipe ON recipe_items ("recipeId")`);
+
+      // Consumo real por servicio (refina la proyección de cobertura en V2)
+      await db.execute(`CREATE TABLE IF NOT EXISTS product_usage (
+        id TEXT PRIMARY KEY,
+        "organizationId" TEXT,
+        "inventoryItemId" TEXT,
+        "productId" TEXT,
+        "recipeId" TEXT,
+        "appointmentId" TEXT,
+        quantity REAL NOT NULL,
+        date TEXT NOT NULL,
+        "createdAt" TEXT NOT NULL
+      )`);
+      await db.execute(`CREATE INDEX IF NOT EXISTS idx_usage_org_date ON product_usage ("organizationId", "date" DESC)`);
 
       // Migración de datos: org por defecto + roles
       const now = new Date().toISOString();

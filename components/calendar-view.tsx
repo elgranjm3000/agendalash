@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 import { useLang } from '@/contexts/i18n-context';
 
 const appointmentTypeColors = {
-  consultation: 'bg-teal-100 text-teal-800',
+  consultation: 'bg-rose-100 text-rose-800',
   checkup: 'bg-emerald-100 text-emerald-800',
   procedure: 'bg-amber-100 text-amber-800',
   'follow-up': 'bg-purple-100 text-purple-800',
@@ -20,14 +20,14 @@ const appointmentTypeColors = {
 
 const appointmentStatusColors = {
   scheduled: 'border-gray-300',
-  confirmed: 'border-teal-500',
+  confirmed: 'border-rose-500',
   completed: 'border-emerald-500',
   cancelled: 'border-red-500',
 };
 
 const appointmentDotColors = {
   scheduled: 'bg-gray-300',
-  confirmed: 'bg-teal-500',
+  confirmed: 'bg-rose-500',
   completed: 'bg-emerald-500',
   cancelled: 'bg-red-500',
 };
@@ -109,13 +109,13 @@ export function CalendarView() {
                   className={cn(
                     'min-h-[44px] md:min-h-[120px] p-1 md:p-2 border rounded-md md:rounded-lg transition-colors',
                     isCurrentMonth ? 'bg-white' : 'bg-gray-50',
-                    isCurrentDay && 'ring-2 ring-teal-500'
+                    isCurrentDay && 'ring-2 ring-rose-500'
                   )}
                 >
                   <div className={cn(
                     'text-xs md:text-sm font-medium mb-1 md:mb-2',
                     isCurrentMonth ? 'text-gray-900' : 'text-gray-400',
-                    isCurrentDay && 'text-teal-600'
+                    isCurrentDay && 'text-rose-600'
                   )}>
                     {format(day, 'd')}
                   </div>
@@ -187,7 +187,7 @@ export function CalendarView() {
               <span className="text-sm text-gray-600">{t('Programada')}</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 border-l-2 border-teal-500 bg-gray-50"></div>
+              <div className="w-4 h-4 border-l-2 border-rose-500 bg-gray-50"></div>
               <span className="text-sm text-gray-600">{t('Confirmada')}</span>
             </div>
             <div className="flex items-center space-x-2">

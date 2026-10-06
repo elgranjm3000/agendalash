@@ -26,7 +26,7 @@ interface AuditRow {
 const actionConfig: Record<string, { label: string; icon: typeof LogIn; badge: string }> = {
   login: { label: 'Inició sesión', icon: LogIn, badge: 'bg-emerald-100 text-emerald-800' },
   login_failed: { label: 'Login fallido', icon: LogOut, badge: 'bg-red-100 text-red-800' },
-  register: { label: 'Se registró', icon: UserPlus, badge: 'bg-teal-100 text-teal-800' },
+  register: { label: 'Se registró', icon: UserPlus, badge: 'bg-rose-100 text-rose-800' },
   view: { label: 'Consultó', icon: Eye, badge: 'bg-gray-100 text-gray-700' },
   create: { label: 'Creó', icon: Plus, badge: 'bg-blue-100 text-blue-800' },
   update: { label: 'Modificó', icon: Pencil, badge: 'bg-amber-100 text-amber-800' },
@@ -78,7 +78,7 @@ export default function AuditPage() {
     <div className="max-w-7xl mx-auto px-4 space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-          <ShieldCheck className="h-8 w-8 text-teal-600" />
+          <ShieldCheck className="h-8 w-8 text-rose-600" />
           Auditoría
         </h1>
         <p className="text-gray-600 mt-1">

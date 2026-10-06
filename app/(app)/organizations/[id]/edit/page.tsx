@@ -60,7 +60,7 @@ export default function EditOrganizationPage() {
   if (loading) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-16 flex justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-teal-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-rose-600" />
       </div>
     );
   }
@@ -105,12 +105,12 @@ export default function EditOrganizationPage() {
                     className={cn(
                       'flex items-center gap-2 rounded-lg border p-4 text-left transition-colors min-h-[44px]',
                       selected
-                        ? 'border-teal-600 bg-teal-50 ring-1 ring-teal-600'
-                        : 'border-gray-200 hover:border-teal-300 hover:bg-gray-50'
+                        ? 'border-rose-600 bg-rose-50 ring-1 ring-rose-600'
+                        : 'border-gray-200 hover:border-rose-300 hover:bg-gray-50'
                     )}
                   >
-                    <Icon className={cn('h-5 w-5', selected ? 'text-teal-600' : 'text-gray-400')} />
-                    <span className={cn('font-medium text-sm', selected ? 'text-teal-700' : 'text-gray-900')}>
+                    <Icon className={cn('h-5 w-5', selected ? 'text-rose-600' : 'text-gray-400')} />
+                    <span className={cn('font-medium text-sm', selected ? 'text-rose-700' : 'text-gray-900')}>
                       {option.label}
                     </span>
                   </button>

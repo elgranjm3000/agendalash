@@ -34,7 +34,7 @@ function Vital({ icon: Icon, label, value, unit }: { icon: typeof HeartPulse; la
   if (value === null || value === undefined || value === '') return null;
   return (
     <div className="flex items-center gap-1.5 rounded-md bg-gray-50 px-2.5 py-1.5">
-      <Icon className="h-3.5 w-3.5 text-teal-600" />
+      <Icon className="h-3.5 w-3.5 text-rose-600" />
       <span className="text-xs text-gray-500">{label}</span>
       <span className="text-xs font-semibold tabular-nums text-gray-900">{value}{unit}</span>
     </div>
@@ -77,7 +77,7 @@ export default function RecordsPage() {
   if (loading || loadingPatients) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 flex justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600" />
       </div>
     );
   }
@@ -88,7 +88,7 @@ export default function RecordsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <Stethoscope className="h-8 w-8 text-teal-600" />
+            <Stethoscope className="h-8 w-8 text-rose-600" />
             Historia Clínica
           </h1>
           <p className="text-gray-600 mt-1">
@@ -162,10 +162,10 @@ export default function RecordsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="relative pl-4 border-l-2 border-teal-100 space-y-4">
+        <div className="relative pl-4 border-l-2 border-rose-100 space-y-4">
           {patientRecords.map((r: MedicalRecord) => (
             <div key={r.id} className="relative">
-              <div className="absolute -left-[1.42rem] top-6 h-2.5 w-2.5 rounded-full bg-teal-500 ring-4 ring-teal-50" />
+              <div className="absolute -left-[1.42rem] top-6 h-2.5 w-2.5 rounded-full bg-rose-500 ring-4 ring-rose-50" />
               <Card className="hover:shadow-md transition-shadow">
                 <CardContent className="p-5 space-y-3">
                   <div className="flex items-start justify-between gap-2">
@@ -183,7 +183,7 @@ export default function RecordsPage() {
                     <div className="flex items-center gap-1 shrink-0">
                       <Button variant="ghost" size="sm" asChild title="Recetar desde esta consulta">
                         <Link href={`/prescriptions/new?patient=${r.patientId}&record=${r.id}`}>
-                          <FileText className="h-4 w-4 text-teal-600" />
+                          <FileText className="h-4 w-4 text-rose-600" />
                         </Link>
                       </Button>
                       <Button variant="ghost" size="sm" asChild title="Editar">
@@ -220,7 +220,7 @@ export default function RecordsPage() {
                   )}
                   {r.diagnostico && (
                     <p className="text-sm text-gray-700">
-                      <Badge className="bg-teal-100 text-teal-800 mr-1.5">Diagnóstico</Badge>
+                      <Badge className="bg-rose-100 text-rose-800 mr-1.5">Diagnóstico</Badge>
                       {r.diagnostico}
                     </p>
                   )}

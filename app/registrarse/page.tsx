@@ -17,20 +17,20 @@ import { cn } from '@/lib/utils';
 const typeOptions: { value: OrganizationType; label: string; description: string; icon: typeof Hospital }[] = [
   {
     value: 'clinic',
-    label: 'Clínica',
-    description: 'Centro médico con consultas y atención ambulatoria.',
+    label: 'Estudio de pestañas',
+    description: 'Salón o estudio dedicado a lifting y extensiones de pestañas.',
     icon: Building,
   },
   {
     value: 'hospital',
-    label: 'Hospital',
-    description: 'Institución de salud con múltiples servicios.',
+    label: 'Red de estudios',
+    description: 'Varios salones o sucursales bajo una misma marca.',
     icon: Hospital,
   },
   {
     value: 'private_doctor',
-    label: 'Doctor Privado',
-    description: 'Consulta independiente de un profesional.',
+    label: 'Lash Artist independiente',
+    description: 'Profesional que trabaja por cuenta propia.',
     icon: Stethoscope,
   },
 ];
@@ -93,7 +93,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-indigo-100 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-indigo-100 py-8 px-4">
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
           <Link href="/">
@@ -104,8 +104,8 @@ export default function RegisterPage() {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Crear cuenta</h1>
             <p className="text-gray-600 mt-1 flex items-center gap-2">
-              <Gift className="h-4 w-4 text-teal-600" />
-              Prueba MediControl gratis durante 7 días, sin tarjeta
+              <Gift className="h-4 w-4 text-rose-600" />
+              Prueba AgendaLash gratis durante 7 días, sin tarjeta
             </p>
           </div>
         </div>
@@ -114,7 +114,7 @@ export default function RegisterPage() {
           <Card>
             <CardHeader>
               <CardTitle>Tu organización</CardTitle>
-              <CardDescription>Será el espacio privado donde gestionarás tus pacientes y citas.</CardDescription>
+              <CardDescription>Será el espacio privado donde gestionarás tus clientas y servicios.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -130,12 +130,12 @@ export default function RegisterPage() {
                       className={cn(
                         'flex flex-col items-start gap-2 rounded-lg border p-4 text-left transition-colors min-h-[44px]',
                         selected
-                          ? 'border-teal-600 bg-teal-50 ring-1 ring-teal-600'
-                          : 'border-gray-200 hover:border-teal-300 hover:bg-gray-50'
+                          ? 'border-rose-600 bg-rose-50 ring-1 ring-rose-600'
+                          : 'border-gray-200 hover:border-rose-300 hover:bg-gray-50'
                       )}
                     >
-                      <Icon className={cn('h-5 w-5', selected ? 'text-teal-600' : 'text-gray-400')} />
-                      <span className={cn('font-medium text-sm', selected ? 'text-teal-700' : 'text-gray-900')}>
+                      <Icon className={cn('h-5 w-5', selected ? 'text-rose-600' : 'text-gray-400')} />
+                      <span className={cn('font-medium text-sm', selected ? 'text-rose-700' : 'text-gray-900')}>
                         {option.label}
                       </span>
                       <span className="text-xs text-gray-500">{option.description}</span>

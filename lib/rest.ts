@@ -254,7 +254,14 @@ export function makeItemHandlers(config: EntityConfig) {
     let warnings: unknown[] = [];
     if (config.afterUpdate) {
       try {
-        warnings = (await config.afterUpdate(params.id, data, existing.rows[0] as unknown as Record<string, unknown>, requester)) ?? [];
+        // Los campos del body que no son columnas (p. ej. `items` de una receta)
+        // no se persisten directo pero sí llegan al hook para su lógica propia.
+        const extra = Object.fromEntries(
+          Object.keys(body)
+            .filter(k => !config.columns.includes(k) && !(k in data))
+            .map(k => [k, body[k]])
+        );
+        warnings = (await config.afterUpdate(params.id, { ...data, ...extra }, existing.rows[0] as unknown as Record<string, unknown>, requester)) ?? [];
       } catch (e) {
         console.error(`afterUpdate ${config.table}:`, e);
       }
@@ -302,16 +309,34 @@ export const patientsConfig: EntityConfig = {
 
 export const appointmentsConfig: EntityConfig = {
   table: 'appointments',
-  columns: ['id', 'organizationId', 'patientId', 'patientName', 'doctorId', 'doctorName', 'date', 'time', 'duration', 'type', 'status', 'notes', 'createdAt', 'updatedAt'],
+  columns: ['id', 'organizationId', 'patientId', 'patientName', 'doctorId', 'doctorName', 'date', 'time', 'duration', 'type', 'status', 'notes', 'recipeId', 'createdAt', 'updatedAt'],
   numberFields: ['duration'],
   tenant: true,
-  // Al completar una cita se descuentan los consumibles de consulta del inventario
+  // Al completar una cita se descuentan los consumibles de consulta y la receta asociada
   afterUpdate: async (id, data, prev) => {
     if (data.status !== 'completed' || prev.status === 'completed') return [];
     const orgId = data.organizationId as string | null ?? prev.organizationId as string | null;
     if (!orgId) return [];
-    const { deductConsultConsumables } = await import('./inventory-deduct');
-    return deductConsultConsumables(orgId, `Consulta ${String(id).slice(0, 8)}`, 'Sistema (cita completada)');
+    const { deductConsultConsumables, deductRecipe } = await import('./inventory-deduct');
+    const warnings = await deductConsultConsumables(orgId, `Consulta ${String(id).slice(0, 8)}`, 'Sistema (cita completada)');
+    // Receta explícita de la cita, o la receta activa cuyo nombre coincida con el tipo de servicio
+    const recipeId = (data.recipeId ?? prev.recipeId) as string | null;
+    let resolved = recipeId;
+    if (!resolved) {
+      const type = String(data.type ?? prev.type ?? '').trim();
+      if (type) {
+        const match = await db.execute({
+          sql: `SELECT id FROM treatment_recipes
+                WHERE "organizationId" = ? AND active = 1 AND lower(name) = lower(?) LIMIT 1`,
+          args: [orgId, type],
+        });
+        resolved = (match.rows[0]?.id as string) ?? null;
+      }
+    }
+    if (resolved) {
+      warnings.push(...await deductRecipe(orgId, resolved, String(id), `Servicio ${String(id).slice(0, 8)} — ${String(data.type ?? prev.type ?? '')}`, 'Sistema (servicio completado)'));
+    }
+    return warnings;
   },
 };
 
@@ -431,3 +456,64 @@ export const organizationsConfig: EntityConfig = {
   columns: ['id', 'name', 'type', 'currency', 'isActive', 'createdAt', 'updatedAt'],
   booleanFields: ['isActive'],
 };
+
+// Catálogo global de insumos (SKU del proveedor). Sin tenant: el stock es del dueño del SaaS.
+export const lashProductsConfig: EntityConfig = {
+  table: 'lash_products',
+  columns: ['id', 'sku', 'name', 'unit', 'stock', 'minStock', 'cost', 'supplier', 'createdAt', 'updatedAt'],
+  numberFields: ['stock', 'minStock', 'cost'],
+  tenant: false,
+};
+
+// Recetas de tratamiento por salón. `items` llega en el body y se persiste en
+// recipe_items vía afterCreate/afterUpdate (no es columna de la tabla).
+export const treatmentRecipesConfig: EntityConfig = {
+  table: 'treatment_recipes',
+  columns: ['id', 'organizationId', 'name', 'servicesPerWeek', 'active', 'createdAt', 'updatedAt'],
+  numberFields: ['servicesPerWeek'],
+  booleanFields: ['active'],
+  tenant: true,
+  afterCreate: async (_data, _requester) => {
+    await syncRecipeItems(String(_data.id), _data);
+    return [];
+  },
+  afterUpdate: async (id, data) => {
+    if ('items' in data) await syncRecipeItems(String(id), data);
+    return [];
+  },
+};
+
+/** Reemplaza los recipe_items de una receta con la lista `items` del body. */
+async function syncRecipeItems(recipeId: string, data: Record<string, unknown>): Promise<void> {
+  const items = data.items;
+  if (!Array.isArray(items)) return;
+  const now = new Date().toISOString();
+  await db.execute({ sql: `DELETE FROM recipe_items WHERE "recipeId" = ?`, args: [recipeId] });
+  for (const item of items) {
+    const it = item as { inventoryItemId?: string | null; productId?: string | null; quantityPerService?: number };
+    if (!it?.quantityPerService) continue;
+    await db.execute({
+      sql: `INSERT INTO recipe_items (id, "recipeId", "inventoryItemId", "productId", "quantityPerService", "createdAt", "updatedAt")
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      args: [crypto.randomUUID(), recipeId, it.inventoryItemId ?? null, it.productId ?? null, Number(it.quantityPerService), now, now],
+    });
+  }
+}
+
+/** Lee una receta con sus ítems (para GET individual y para la edición). */
+export async function getRecipeWithItems(recipeId: string): Promise<Record<string, unknown> | null> {
+  const r = await db.execute({ sql: `SELECT * FROM treatment_recipes WHERE id = ?`, args: [recipeId] });
+  if (r.rows.length === 0) return null;
+  const recipe = { ...r.rows[0], active: Boolean(r.rows[0].active) } as Record<string, unknown>;
+  const items = await db.execute({
+    sql: `SELECT id, "inventoryItemId", "productId", "quantityPerService" FROM recipe_items WHERE "recipeId" = ?`,
+    args: [recipeId],
+  });
+  recipe.items = items.rows.map(row => ({
+    id: row.id,
+    inventoryItemId: row.inventoryItemId,
+    productId: row.productId,
+    quantityPerService: Number(row.quantityPerService),
+  }));
+  return recipe;
+}

@@ -146,6 +146,69 @@ export interface InventoryItem {
   updatedAt: string;
 }
 
+/** Insumo del catálogo del proveedor (SKU global, stock en depósito) */
+export interface LashProduct {
+  id: string;
+  sku: string;
+  name: string;
+  unit: string;
+  stock: number;
+  minStock: number;
+  cost?: number | null;
+  supplier?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Ítem de una receta: cuánto consume un servicio de un insumo del salón */
+export interface RecipeItem {
+  id?: string;
+  inventoryItemId: string | null;
+  productId?: string | null;
+  quantityPerService: number;
+}
+
+/** Receta de tratamiento (fórmula de consumo por servicio) */
+export interface TreatmentRecipe {
+  id: string;
+  organizationId?: string | null;
+  name: string;
+  servicesPerWeek: number;
+  active: boolean;
+  items: RecipeItem[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Fila de la proyección de cobertura por insumo */
+export interface CoverageRow {
+  itemId: string;
+  name: string;
+  unit: string;
+  stock: number;
+  productId: string | null;
+  sku: string | null;
+  weeklyUsage: number;
+  sessionsCovered: number;
+  coverageDays: number | null;
+  thresholdDays: number;
+  level: 'ok' | 'warn' | 'critical';
+}
+
+export interface CoverageResponse {
+  items?: CoverageRow[];
+  supplier?: {
+    productId: string;
+    sku: string;
+    name: string;
+    unit: string;
+    stock: number;
+    minStock: number;
+    networkWeeklyUsage: number;
+    coverageDays: number | null;
+  }[];
+}
+
 export interface StockMovement {
   id: string;
   organizationId?: string | null;

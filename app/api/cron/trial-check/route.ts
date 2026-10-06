@@ -51,11 +51,11 @@ async function handle(request: Request) {
       await sendEmail({
         to,
         subject: left === 0
-          ? `Tu prueba de MediControl termina hoy — ${orgName}`
-          : `Te quedan ${left} días de prueba — MediControl`,
+          ? `Tu prueba de AgendaLash termina hoy — ${orgName}`
+          : `Te quedan ${left} días de prueba — AgendaLash`,
         html: `<p>Hola ${firstName},</p>
                <p>La prueba gratuita de <strong>${orgName}</strong> ${left === 0 ? 'termina <strong>hoy</strong>' : `termina en <strong>${left} día(s)</strong>`}.</p>
-               <p>Tus datos están a salvo. Para seguir usando MediControl, respondé este email solicitando tu licencia.</p>`,
+               <p>Tus datos están a salvo. Para seguir usando AgendaLash, respondé este email solicitando tu licencia.</p>`,
       }, { organizationId: org.id as string });
       sent.push(`${orgName}: aviso ${left}d → ${to}`);
       await db.execute({

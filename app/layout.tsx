@@ -8,8 +8,8 @@ import { I18nProvider } from '@/contexts/i18n-context';
 const figtree = Figtree({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'MediControl - Sistema de Gestión de Citas Médicas',
-  description: 'Sistema completo para la gestión de pacientes, citas médicas, prescripciones y facturación',
+  title: 'AgendaLash - Sistema de Gestión para Estudios de Pestañas',
+  description: 'Agenda, fichas de clientas, insumos con cobertura proyectada y facturación para salones de belleza',
 };
 
 export default function RootLayout({

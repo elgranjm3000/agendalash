@@ -29,19 +29,19 @@ export default function PrintPrescriptionPage() {
         return (
           <div className="text-gray-900">
             {/* Encabezado */}
-            <div className="flex items-start justify-between border-b-2 border-teal-600 pb-6">
+            <div className="flex items-start justify-between border-b-2 border-rose-600 pb-6">
               <div className="flex items-center gap-3">
                 {orgLogo && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={orgLogo} alt="" className="h-12 w-auto max-w-[120px] object-contain" />
                 )}
-                <h1 className="text-2xl font-bold text-teal-700 tracking-tight">{orgName || 'MediControl'}</h1>
+                <h1 className="text-2xl font-bold text-rose-700 tracking-tight">{orgName || 'AgendaLash'}</h1>
               </div>
               <div>
                 <p className="mt-1 text-sm text-gray-500">{t('Receta médica')}</p>
               </div>
               <div className="text-right">
-                <p className="text-4xl font-bold leading-none text-teal-600">℞</p>
+                <p className="text-4xl font-bold leading-none text-rose-600">℞</p>
                 <p className="mt-2 text-sm text-gray-500">
                   Nº <span className="font-medium tabular-nums">{rx.id.slice(0, 8).toUpperCase()}</span>
                 </p>
@@ -126,7 +126,7 @@ export default function PrintPrescriptionPage() {
 
             {/* Pie */}
             <div className="mt-16 border-t border-gray-200 pt-4 flex items-center justify-between text-xs text-gray-400">
-              <span>{t('Generado por MediControl')}</span>
+              <span>{t('Generado por AgendaLash')}</span>
               <span>{t('Este documento carece de validez sin la firma del profesional.')}</span>
             </div>
           </div>

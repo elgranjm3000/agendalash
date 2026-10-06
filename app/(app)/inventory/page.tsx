@@ -257,7 +257,7 @@ export default function InventoryPage() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 flex justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600" />
       </div>
     );
   }
@@ -268,7 +268,7 @@ export default function InventoryPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <Boxes className="h-8 w-8 text-teal-600" />
+            <Boxes className="h-8 w-8 text-rose-600" />
             Inventario
           </h1>
           <p className="text-gray-600 mt-1">Insumos médicos con control de stock y reposición</p>
@@ -301,7 +301,7 @@ export default function InventoryPage() {
         <Card>
           <CardContent className="p-5">
             <p className="text-sm font-medium text-gray-600">Valor estimado</p>
-            <p className="text-2xl font-bold text-teal-700 tabular-nums">{formatMoney(stats.value, currency)}</p>
+            <p className="text-2xl font-bold text-rose-700 tabular-nums">{formatMoney(stats.value, currency)}</p>
           </CardContent>
         </Card>
       </div>
@@ -360,7 +360,7 @@ export default function InventoryPage() {
                           <p className="font-medium text-gray-900">
                             {item.name}
                             {item.deductOnConsult && (
-                              <Badge variant="outline" className="ml-2 text-[10px] uppercase tracking-wide text-teal-700 border-teal-200">
+                              <Badge variant="outline" className="ml-2 text-[10px] uppercase tracking-wide text-rose-700 border-rose-200">
                                 consulta
                               </Badge>
                             )}
@@ -418,7 +418,7 @@ export default function InventoryPage() {
         <Card>
           <CardContent className="p-5">
             <h3 className="font-semibold text-gray-900 flex items-center gap-2 mb-3">
-              <History className="h-4 w-4 text-teal-600" />
+              <History className="h-4 w-4 text-rose-600" />
               Movimientos recientes
             </h3>
             <div className="space-y-1.5">
@@ -538,7 +538,7 @@ export default function InventoryPage() {
             <label className="flex items-start gap-2.5 rounded-md border border-gray-200 p-3 cursor-pointer">
               <input
                 type="checkbox"
-                className="mt-0.5 h-4 w-4 accent-teal-600"
+                className="mt-0.5 h-4 w-4 accent-rose-600"
                 checked={deductOnConsult}
                 onChange={(e) => setDeductOnConsult(e.target.checked)}
               />

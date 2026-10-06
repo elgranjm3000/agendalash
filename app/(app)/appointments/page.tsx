@@ -25,7 +25,7 @@ import { useAppointments } from '@/hooks/use-appointments';
 
 const statusColors = {
   scheduled: 'bg-amber-100 text-amber-800',
-  confirmed: 'bg-teal-100 text-teal-800',
+  confirmed: 'bg-rose-100 text-rose-800',
   completed: 'bg-emerald-100 text-emerald-800',
   cancelled: 'bg-red-100 text-red-800',
 };
@@ -95,7 +95,7 @@ export default function AppointmentsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <Calendar className="h-8 w-8 text-teal-600" />
+            <Calendar className="h-8 w-8 text-rose-600" />
             Citas Médicas
           </h1>
           <p className="text-gray-600 mt-1">
@@ -201,8 +201,8 @@ export default function AppointmentsPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
-                        <Calendar className="h-6 w-6 text-teal-600" />
+                      <div className="w-12 h-12 bg-rose-100 rounded-lg flex items-center justify-center">
+                        <Calendar className="h-6 w-6 text-rose-600" />
                       </div>
                     </div>
                     

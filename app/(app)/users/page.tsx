@@ -25,7 +25,7 @@ import { useUsers } from '@/hooks/use-users';
 const roleColors: Record<string, string> = {
   super_admin: 'bg-slate-800 text-white',
   admin: 'bg-purple-100 text-purple-800',
-  doctor: 'bg-teal-100 text-teal-800',
+  doctor: 'bg-rose-100 text-rose-800',
   nurse: 'bg-emerald-100 text-emerald-800',
   receptionist: 'bg-amber-100 text-amber-800',
 };
@@ -87,7 +87,7 @@ export default function UsersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <Settings className="h-8 w-8 text-teal-600" />
+            <Settings className="h-8 w-8 text-rose-600" />
             Gestión de Usuarios
           </h1>
           <p className="text-gray-600 mt-1">

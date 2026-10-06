@@ -118,7 +118,7 @@ export default function CashPage() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 flex justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600" />
       </div>
     );
   }
@@ -129,7 +129,7 @@ export default function CashPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <Wallet className="h-8 w-8 text-teal-600" />
+            <Wallet className="h-8 w-8 text-rose-600" />
             Caja
           </h1>
           <p className="text-gray-600 mt-1">Movimientos de efectivo y arqueo diario</p>
@@ -176,10 +176,10 @@ export default function CashPage() {
         <Card>
           <CardContent className="p-5">
             <p className="text-sm font-medium text-gray-600 flex items-center gap-1.5">
-              <Scale className="h-4 w-4 text-teal-600" />
+              <Scale className="h-4 w-4 text-rose-600" />
               Neto en caja
             </p>
-            <p className="text-2xl font-bold text-teal-700 tabular-nums">{formatMoney(totals.neto, currency)}</p>
+            <p className="text-2xl font-bold text-rose-700 tabular-nums">{formatMoney(totals.neto, currency)}</p>
             <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-gray-500">
               {Object.entries(totals.byMethod).map(([m, v]) => (
                 <span key={m}>{methodLabels[m as CashMethod]}: <span className="tabular-nums font-medium">{formatMoney(v, currency)}</span></span>

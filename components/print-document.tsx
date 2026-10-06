@@ -56,7 +56,7 @@ export function PrintDocument({
 
       {loading && (
         <div className="py-24 flex justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-teal-600" />
+          <Loader2 className="h-8 w-8 animate-spin text-rose-600" />
         </div>
       )}
 

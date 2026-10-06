@@ -114,12 +114,12 @@ export default function NewOrganizationPage() {
                     className={cn(
                       'flex flex-col items-start gap-2 rounded-lg border p-4 text-left transition-colors min-h-[44px]',
                       selected
-                        ? 'border-teal-600 bg-teal-50 ring-1 ring-teal-600'
-                        : 'border-gray-200 hover:border-teal-300 hover:bg-gray-50'
+                        ? 'border-rose-600 bg-rose-50 ring-1 ring-rose-600'
+                        : 'border-gray-200 hover:border-rose-300 hover:bg-gray-50'
                     )}
                   >
-                    <Icon className={cn('h-6 w-6', selected ? 'text-teal-600' : 'text-gray-400')} />
-                    <span className={cn('font-medium text-sm', selected ? 'text-teal-700' : 'text-gray-900')}>
+                    <Icon className={cn('h-6 w-6', selected ? 'text-rose-600' : 'text-gray-400')} />
+                    <span className={cn('font-medium text-sm', selected ? 'text-rose-700' : 'text-gray-900')}>
                       {option.label}
                     </span>
                     <span className="text-xs text-gray-500">{option.description}</span>

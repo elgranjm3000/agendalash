@@ -9,7 +9,7 @@ export default function CalendarPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-          <CalendarIcon className="h-8 w-8 text-teal-600" />
+          <CalendarIcon className="h-8 w-8 text-rose-600" />
           Calendario de Citas
         </h1>
         <p className="text-gray-600 mt-1">

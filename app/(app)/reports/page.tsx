@@ -148,7 +148,7 @@ export default function ReportsPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-          <BarChart3 className="h-8 w-8 text-teal-600" />
+          <BarChart3 className="h-8 w-8 text-rose-600" />
           Reportes y Análisis
         </h1>
         <p className="text-gray-600 mt-1">
@@ -169,8 +169,8 @@ export default function ReportsPage() {
                   +{stats.newPatientsThisMonth} este mes
                 </p>
               </div>
-              <div className="p-3 rounded-full bg-teal-100">
-                <Users className="h-6 w-6 text-teal-600" />
+              <div className="p-3 rounded-full bg-rose-100">
+                <Users className="h-6 w-6 text-rose-600" />
               </div>
             </div>
           </CardContent>
@@ -286,7 +286,7 @@ export default function ReportsPage() {
                 return (
                   <div key={type} className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="w-4 h-4 bg-teal-500 rounded"></div>
+                      <div className="w-4 h-4 bg-rose-500 rounded"></div>
                       <span className="text-sm font-medium">
                         {typeLabels[type as keyof typeof typeLabels] || type}
                       </span>
@@ -325,12 +325,12 @@ export default function ReportsPage() {
                 <CreditCard className="h-8 w-8 text-amber-600" />
               </div>
               
-              <div className="flex justify-between items-center p-4 bg-teal-50 rounded-lg">
+              <div className="flex justify-between items-center p-4 bg-rose-50 rounded-lg">
                 <div>
-                  <p className="text-sm font-medium text-teal-800">Ingresos Este Mes</p>
-                  <p className="text-2xl font-bold text-teal-900">{formatMoney(stats.revenueThisMonth, currency)}</p>
+                  <p className="text-sm font-medium text-rose-800">Ingresos Este Mes</p>
+                  <p className="text-2xl font-bold text-rose-900">{formatMoney(stats.revenueThisMonth, currency)}</p>
                 </div>
-                <BarChart3 className="h-8 w-8 text-teal-600" />
+                <BarChart3 className="h-8 w-8 text-rose-600" />
               </div>
             </div>
           </CardContent>

@@ -194,7 +194,7 @@ export default function ProfilePage() {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="relative group rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2"
+              className="relative group rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 focus-visible:ring-offset-2"
               aria-label="Cambiar foto de perfil"
             >
               {avatar ? (
@@ -205,8 +205,8 @@ export default function ProfilePage() {
                   className="h-24 w-24 rounded-full object-cover ring-1 ring-black/10"
                 />
               ) : (
-                <div className="h-24 w-24 rounded-full bg-teal-100 flex items-center justify-center">
-                  <span className="text-2xl font-semibold text-teal-700">{initials}</span>
+                <div className="h-24 w-24 rounded-full bg-rose-100 flex items-center justify-center">
+                  <span className="text-2xl font-semibold text-rose-700">{initials}</span>
                 </div>
               )}
               <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity flex items-center justify-center">

@@ -93,7 +93,7 @@ export default function TriagePage() {
     <div className="max-w-5xl mx-auto px-4 space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-          <Activity className="h-8 w-8 text-teal-600" />
+          <Activity className="h-8 w-8 text-rose-600" />
           Triaje
         </h1>
         <p className="text-gray-600 mt-1">

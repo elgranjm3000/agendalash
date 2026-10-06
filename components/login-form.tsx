@@ -43,7 +43,7 @@ export function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-indigo-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-md relative">
         <div className="absolute top-4 right-4 flex items-center rounded-md border border-gray-200 overflow-hidden bg-white">
           {(['es', 'en'] as const).map((l) => (
@@ -52,7 +52,7 @@ export function LoginForm() {
               type="button"
               onClick={() => setLang(l)}
               className={`px-2.5 py-1 text-xs font-semibold uppercase transition-colors ${
-                lang === l ? 'bg-teal-600 text-white' : 'text-gray-500 hover:bg-gray-50'
+                lang === l ? 'bg-rose-600 text-white' : 'text-gray-500 hover:bg-gray-50'
               }`}
             >
               {l}
@@ -62,11 +62,11 @@ export function LoginForm() {
 
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="p-3 bg-teal-100 rounded-full">
-              <Stethoscope className="h-8 w-8 text-teal-600" />
+            <div className="p-3 bg-rose-100 rounded-full">
+              <Stethoscope className="h-8 w-8 text-rose-600" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold text-gray-900">MediControl</CardTitle>
+          <CardTitle className="text-2xl font-bold text-gray-900">AgendaLash</CardTitle>
           <p className="text-gray-600">{t('login.subtitle')}</p>
         </CardHeader>
         <CardContent>
@@ -132,7 +132,7 @@ export function LoginForm() {
               <span className="text-gray-600">
                 {lang === 'es' ? '¿No tenés cuenta? ' : "Don't have an account? "}
               </span>
-              <Link href="/registrarse" className="font-semibold text-teal-700 hover:text-teal-800">
+              <Link href="/registrarse" className="font-semibold text-rose-700 hover:text-rose-800">
                 {lang === 'es' ? 'Prueba gratis 7 días' : 'Try free for 7 days'}
               </Link>
             </div>
