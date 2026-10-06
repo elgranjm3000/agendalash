@@ -77,7 +77,7 @@ export default function PrintPrescriptionPage() {
                 <thead>
                   <tr className="border-y border-gray-200 bg-gray-50 text-left">
                     <th className="py-2.5 pr-4 pl-3 text-xs font-semibold uppercase tracking-widest text-gray-500">{t('Producto')}</th>
-                    <th className="py-2.5 px-4 text-xs font-semibold uppercase tracking-widest text-gray-500">{t('Dosis')}</th>
+                    <th className="py-2.5 px-4 text-xs font-semibold uppercase tracking-widest text-gray-500">{t('Cantidad / presentación')}</th>
                     <th className="py-2.5 px-4 text-xs font-semibold uppercase tracking-widest text-gray-500">{t('Frecuencia')}</th>
                     <th className="py-2.5 px-4 text-xs font-semibold uppercase tracking-widest text-gray-500">{t('Duración')}</th>
                   </tr>

@@ -135,7 +135,7 @@ export function PrescriptionForm({ prescription, onSubmit, onCancel, initialPati
             <Input
               id="diagnosis"
               {...register('diagnosis', { required: 'La nota técnica es requerida' })}
-              placeholder="Diagnóstico / nota técnica"
+              placeholder="Ej: Post-lifting — hidratación y sello"
             />
             {errors.diagnosis && (
               <p className="text-sm text-red-600 mt-1">{errors.diagnosis.message}</p>
@@ -179,10 +179,10 @@ export function PrescriptionForm({ prescription, onSubmit, onCancel, initialPati
                     </div>
                     
                     <div>
-                      <Label htmlFor={`medications.${index}.dosage`}>{t('Dosis')}</Label>
+                      <Label htmlFor={`medications.${index}.dosage`}>{t('Cantidad / presentación')}</Label>
                       <Input
-                        {...register(`medications.${index}.dosage`, { required: 'La dosis es requerida' })}
-                        placeholder="ej: 500mg"
+                        {...register(`medications.${index}.dosage`, { required: 'La cantidad es requerida' })}
+                        placeholder="ej: Sérum 15 ml"
                       />
                     </div>
                     
@@ -190,7 +190,7 @@ export function PrescriptionForm({ prescription, onSubmit, onCancel, initialPati
                       <Label htmlFor={`medications.${index}.frequency`}>{t('Frecuencia')}</Label>
                       <Input
                         {...register(`medications.${index}.frequency`, { required: 'La frecuencia es requerida' })}
-                        placeholder="ej: Cada 8 horas"
+                        placeholder="ej: Cada noche antes de dormir"
                       />
                     </div>
                     
@@ -198,7 +198,7 @@ export function PrescriptionForm({ prescription, onSubmit, onCancel, initialPati
                       <Label htmlFor={`medications.${index}.duration`}>{t('Duración')}</Label>
                       <Input
                         {...register(`medications.${index}.duration`, { required: 'La duración es requerida' })}
-                        placeholder="ej: 7 días"
+                        placeholder="ej: 2 semanas"
                       />
                     </div>
                   </div>
