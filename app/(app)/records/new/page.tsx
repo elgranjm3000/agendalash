@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { ArrowLeft, HeartPulse, Loader2 } from 'lucide-react';
+import { ArrowLeft, Sparkles, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -37,8 +37,6 @@ export default function NewRecordPage() {
   const [heartRate, setHeartRate] = useState('');
   const [temperature, setTemperature] = useState('');
   const [weight, setWeight] = useState('');
-  const [height, setHeight] = useState('');
-  const [oxygenSat, setOxygenSat] = useState('');
   const [diagnostico, setDiagnostico] = useState('');
   const [indicaciones, setIndicaciones] = useState('');
   const [saving, setSaving] = useState(false);
@@ -63,8 +61,6 @@ export default function NewRecordPage() {
       setHeartRate(existing.heartRate?.toString() ?? '');
       setTemperature(existing.temperature?.toString() ?? '');
       setWeight(existing.weight?.toString() ?? '');
-      setHeight(existing.height?.toString() ?? '');
-      setOxygenSat(existing.oxygenSat?.toString() ?? '');
       setDiagnostico(existing.diagnostico ?? '');
       setIndicaciones(existing.indicaciones ?? '');
     }
@@ -75,7 +71,7 @@ export default function NewRecordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!patientId) {
-      toast.error('Selecciona el paciente');
+      toast.error('Selecciona la clienta');
       return;
     }
     const patient = patients.find((p) => p.id === patientId);
@@ -86,7 +82,7 @@ export default function NewRecordPage() {
       patientId,
       patientName: `${patient.firstName} ${patient.lastName}`,
       doctorId: doctorId || (user?.id ?? ''),
-      doctorName: doctor ? `Dr. ${doctor.firstName} ${doctor.lastName}` : (user ? `${user.firstName} ${user.lastName}` : ''),
+      doctorName: doctor ? `Prof. ${doctor.firstName} ${doctor.lastName}` : (user ? `${user.firstName} ${user.lastName}` : ''),
       date,
       status: 'completada' as const,
       motivo: motivo.trim() || undefined,
@@ -95,8 +91,6 @@ export default function NewRecordPage() {
       heartRate: numOrNull(heartRate),
       temperature: numOrNull(temperature),
       weight: numOrNull(weight),
-      height: numOrNull(height),
-      oxygenSat: numOrNull(oxygenSat),
       diagnostico: diagnostico.trim() || undefined,
       indicaciones: indicaciones.trim() || undefined,
     };
@@ -105,10 +99,10 @@ export default function NewRecordPage() {
     try {
       if (isEdit && existing) {
         await updateRecord(existing.id, data);
-        toast.success('Consulta actualizada correctamente');
+        toast.success('Ficha actualizada correctamente');
       } else {
         await addRecord(data);
-        toast.success('Consulta registrada en la historia clínica');
+        toast.success('Servicio registrado en la ficha de clienta');
       }
       router.push(`/records?patient=${patientId}`);
     } catch {
@@ -126,25 +120,25 @@ export default function NewRecordPage() {
           </Button>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              {isEdit ? 'Editar Consulta' : 'Nueva Consulta'}
+              {isEdit ? 'Editar ficha' : 'Nueva ficha de servicio'}
             </h1>
-            <p className="text-gray-600 mt-1">Registra el episodio clínico del paciente</p>
+            <p className="text-gray-600 mt-1">Registra el servicio realizado a la clienta</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Paciente y profesional</CardTitle>
+              <CardTitle>Clienta y profesional</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Paciente</Label>
+                <Label>Clienta</Label>
                 <PatientCombobox
                   patients={patients}
                   value={patientId}
                   onValueChange={setPatientId}
-                  placeholder="Buscar paciente…"
+                  placeholder="Buscar clienta…"
                 />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -159,12 +153,12 @@ export default function NewRecordPage() {
                   >
                     <option value="">Seleccionar…</option>
                     {doctors.map((d) => (
-                      <option key={d.id} value={d.id}>Dr. {d.firstName} {d.lastName}</option>
+                      <option key={d.id} value={d.id}>Prof. {d.firstName} {d.lastName}</option>
                     ))}
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="date">Fecha de la consulta</Label>
+                  <Label htmlFor="date">Fecha del servicio</Label>
                   <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
                 </div>
               </div>
@@ -174,36 +168,28 @@ export default function NewRecordPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <HeartPulse className="h-5 w-5 text-rose-600" />
-                Signos vitales
+                <Sparkles className="h-5 w-5 text-rose-600" />
+                Detalles del servicio
               </CardTitle>
               <CardDescription>Dejalos en blanco los que no correspondan.</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="bp">Presión arterial</Label>
-                  <Input id="bp" placeholder="120/80" value={bloodPressure} onChange={(e) => setBloodPressure(e.target.value)} />
+                  <Label htmlFor="bp">Curva usada</Label>
+                  <Input id="bp" placeholder="C, D o L" value={bloodPressure} onChange={(e) => setBloodPressure(e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="hr">FC (lpm)</Label>
-                  <Input id="hr" type="number" inputMode="numeric" placeholder="72" value={heartRate} onChange={(e) => setHeartRate(e.target.value)} />
+                  <Label htmlFor="hr">Tiempo de procesamiento (min)</Label>
+                  <Input id="hr" type="number" inputMode="numeric" placeholder="15" value={heartRate} onChange={(e) => setHeartRate(e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="temp">Temp (°C)</Label>
-                  <Input id="temp" type="number" step="0.1" inputMode="decimal" placeholder="36.5" value={temperature} onChange={(e) => setTemperature(e.target.value)} />
+                  <Label htmlFor="temp">Permante usado (ml)</Label>
+                  <Input id="temp" type="number" step="0.1" inputMode="decimal" placeholder="2" value={temperature} onChange={(e) => setTemperature(e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="weight">Peso (kg)</Label>
-                  <Input id="weight" type="number" step="0.1" inputMode="decimal" placeholder="70" value={weight} onChange={(e) => setWeight(e.target.value)} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="height">Talla (m)</Label>
-                  <Input id="height" type="number" step="0.01" inputMode="decimal" placeholder="1.70" value={height} onChange={(e) => setHeight(e.target.value)} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="spo2">SpO₂ (%)</Label>
-                  <Input id="spo2" type="number" inputMode="numeric" placeholder="98" value={oxygenSat} onChange={(e) => setOxygenSat(e.target.value)} />
+                  <Label htmlFor="weight">Fijador usado (ml)</Label>
+                  <Input id="weight" type="number" step="0.1" inputMode="decimal" placeholder="1" value={weight} onChange={(e) => setWeight(e.target.value)} />
                 </div>
               </div>
             </CardContent>
@@ -211,44 +197,44 @@ export default function NewRecordPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Consulta</CardTitle>
+              <CardTitle>Servicio</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="motivo">Motivo de consulta</Label>
+                <Label htmlFor="motivo">Motivo del servicio</Label>
                 <Input
                   id="motivo"
-                  placeholder="Ej: Dolor lumbar de 3 días"
+                  placeholder="Ej: Lifting con curva D"
                   value={motivo}
                   onChange={(e) => setMotivo(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="ea">Enfermedad actual</Label>
+                <Label htmlFor="ea">Notas del servicio</Label>
                 <Textarea
                   id="ea"
                   rows={3}
-                  placeholder="Relato del cuadro clínico, evolución, antecedentes del episodio…"
+                  placeholder="Notas del servicio, evolución, antecedentes de la clienta…"
                   value={enfermedadActual}
                   onChange={(e) => setEnfermedadActual(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="dx">Diagnóstico</Label>
+                <Label htmlFor="dx">Diagnóstico / nota técnica</Label>
                 <Textarea
                   id="dx"
                   rows={2}
-                  placeholder="Diagnóstico presuntivo o confirmado"
+                  placeholder="Nota técnica del servicio"
                   value={diagnostico}
                   onChange={(e) => setDiagnostico(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="ind">Plan e indicaciones</Label>
+                <Label htmlFor="ind">Cuidados posteriores</Label>
                 <Textarea
                   id="ind"
                   rows={2}
-                  placeholder="Indicaciones, estudios solicitados, control…"
+                  placeholder="Ej: No mojar las pestañas en 24 h, cepillo diario…"
                   value={indicaciones}
                   onChange={(e) => setIndicaciones(e.target.value)}
                 />
@@ -262,7 +248,7 @@ export default function NewRecordPage() {
             </Button>
             <Button type="submit" disabled={saving} className="flex items-center gap-2 min-h-[44px]">
               {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-              {isEdit ? 'Guardar cambios' : 'Registrar consulta'}
+              {isEdit ? 'Guardar cambios' : 'Registrar servicio'}
             </Button>
           </div>
         </form>

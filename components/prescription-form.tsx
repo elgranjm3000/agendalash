@@ -20,7 +20,7 @@ interface PrescriptionFormProps {
   prescription?: Prescription;
   onSubmit: (data: Omit<Prescription, 'id' | 'createdAt' | 'updatedAt'>) => void;
   onCancel: () => void;
-  /** Preselección desde la Historia Clínica */
+  /** Preselección desde la Ficha de clienta */
   initialPatientId?: string;
   recordId?: string | null;
 }
@@ -88,33 +88,33 @@ export function PrescriptionForm({ prescription, onSubmit, onCancel, initialPati
     <Card className="max-w-4xl mx-auto">
       <CardHeader>
         <CardTitle>
-          {prescription ? 'Editar Prescripción' : 'Nueva Prescripción'}
+          {prescription ? 'Editar Indicación' : 'Nueva Indicación'}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="patientId">{t('Paciente')}</Label>
+              <Label htmlFor="patientId">{t('Clienta')}</Label>
               <PatientCombobox
               patients={patients}
               value={selectedPatientId || ''}
               onValueChange={(value) => setValue('patientId', value)}
             />
               {errors.patientId && (
-                <p className="text-sm text-red-600 mt-1">Debe seleccionar un paciente</p>
+                <p className="text-sm text-red-600 mt-1">Debe seleccionar una clienta</p>
               )}
             </div>
 
             <div>
-              <Label htmlFor="doctorId">Doctor</Label>
+              <Label htmlFor="doctorId">Profesional</Label>
               <Select 
                 onValueChange={(value) => setValue('doctorId', value)} 
                 defaultValue={prescription?.doctorId || (user?.role === 'doctor' ? user.id : '')}
                 disabled={user?.role === 'doctor'}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar doctor" />
+                  <SelectValue placeholder="Seleccionar profesional" />
                 </SelectTrigger>
                 <SelectContent>
                   {doctors.map((doctor) => (
@@ -125,17 +125,17 @@ export function PrescriptionForm({ prescription, onSubmit, onCancel, initialPati
                 </SelectContent>
               </Select>
               {errors.doctorId && (
-                <p className="text-sm text-red-600 mt-1">Debe seleccionar un doctor</p>
+                <p className="text-sm text-red-600 mt-1">Debe seleccionar un profesional</p>
               )}
             </div>
           </div>
 
           <div>
-            <Label htmlFor="diagnosis">{t('Diagnóstico')}</Label>
+            <Label htmlFor="diagnosis">{t('Nota técnica')}</Label>
             <Input
               id="diagnosis"
-              {...register('diagnosis', { required: 'El diagnóstico es requerido' })}
-              placeholder="Diagnóstico del paciente"
+              {...register('diagnosis', { required: 'La nota técnica es requerida' })}
+              placeholder="Diagnóstico / nota técnica"
             />
             {errors.diagnosis && (
               <p className="text-sm text-red-600 mt-1">{errors.diagnosis.message}</p>
@@ -144,10 +144,10 @@ export function PrescriptionForm({ prescription, onSubmit, onCancel, initialPati
 
           <div>
             <div className="flex items-center justify-between mb-4">
-              <Label>Medicamentos</Label>
+              <Label>Productos</Label>
               <Button type="button" onClick={addMedication} variant="outline" size="sm">
                 <Plus className="h-4 w-4 mr-2" />
-                Agregar Medicamento
+                Agregar Producto
               </Button>
             </div>
             
@@ -155,7 +155,7 @@ export function PrescriptionForm({ prescription, onSubmit, onCancel, initialPati
               {fields.map((field, index) => (
                 <Card key={field.id} className="p-4">
                   <div className="flex items-center justify-between mb-4">
-                    <h4 className="font-medium">Medicamento {index + 1}</h4>
+                    <h4 className="font-medium">Producto {index + 1}</h4>
                     {fields.length > 1 && (
                       <Button
                         type="button"
@@ -171,10 +171,10 @@ export function PrescriptionForm({ prescription, onSubmit, onCancel, initialPati
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor={`medications.${index}.name`}>Nombre del Medicamento</Label>
+                      <Label htmlFor={`medications.${index}.name`}>Nombre del producto</Label>
                       <Input
                         {...register(`medications.${index}.name`, { required: 'El nombre es requerido' })}
-                        placeholder="Nombre del medicamento"
+                        placeholder="Nombre del producto"
                       />
                     </div>
                     
@@ -207,7 +207,7 @@ export function PrescriptionForm({ prescription, onSubmit, onCancel, initialPati
                     <Label htmlFor={`medications.${index}.instructions`}>Instrucciones Especiales</Label>
                     <Textarea
                       {...register(`medications.${index}.instructions`)}
-                      placeholder="Instrucciones adicionales para este medicamento..."
+                      placeholder="Instrucciones adicionales para este producto..."
                       rows={2}
                     />
                   </div>
@@ -221,7 +221,7 @@ export function PrescriptionForm({ prescription, onSubmit, onCancel, initialPati
             <Textarea
               id="instructions"
               {...register('instructions', { required: 'Las instrucciones son requeridas' })}
-              placeholder="Instrucciones generales para el paciente..."
+              placeholder="Instrucciones generales para la clienta..."
               rows={4}
             />
             {errors.instructions && (
@@ -234,7 +234,7 @@ export function PrescriptionForm({ prescription, onSubmit, onCancel, initialPati
               <Label htmlFor="status">Estado</Label>
               <Select onValueChange={(value) => setValue('status', value)} defaultValue={prescription.status}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Estado de la prescripción" />
+                  <SelectValue placeholder="Estado de la indicación" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="active">{t('Activa')}</SelectItem>
@@ -247,7 +247,7 @@ export function PrescriptionForm({ prescription, onSubmit, onCancel, initialPati
 
           <div className="flex gap-4 pt-4">
             <Button type="submit" disabled={loading} className="flex-1">
-              {loading ? 'Guardando...' : (prescription ? 'Actualizar' : 'Crear')} Prescripción
+              {loading ? 'Guardando...' : (prescription ? 'Actualizar' : 'Crear')} Indicación
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar

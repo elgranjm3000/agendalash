@@ -8,7 +8,7 @@ export const GET = makeItemHandlers(patientsConfig).GET;
 export const PATCH = makeItemHandlers(patientsConfig).PATCH;
 
 /**
- * DELETE elimina el paciente y en cascada sus citas, recetas y facturas,
+ * DELETE elimina la clienta y en cascada sus citas, indicaciones y facturas,
  * siempre dentro de la organización del usuario.
  */
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {

@@ -16,7 +16,7 @@ export default function EditPatientPage() {
   const handleSubmit = async (patientData: any) => {
     try {
       await updatePatient(params.id, patientData);
-      toast.success('Paciente actualizado correctamente');
+      toast.success('Clienta actualizada correctamente');
       router.push('/patients');
     } catch {
       toast.error('No se pudo guardar. Intentá de nuevo.');
@@ -38,7 +38,7 @@ export default function EditPatientPage() {
   if (!patient) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Paciente no encontrado</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Clienta no encontrada</h1>
         <p className="text-gray-600">Puede que haya sido eliminado.</p>
       </div>
     );
@@ -47,8 +47,8 @@ export default function EditPatientPage() {
   return (
     <div className="max-w-7xl mx-auto px-4">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Editar Paciente</h1>
-        <p className="text-gray-600 mt-1">Modifica los datos del paciente</p>
+        <h1 className="text-3xl font-bold text-gray-900">Editar Clienta</h1>
+        <p className="text-gray-600 mt-1">Modifica los datos de la clienta</p>
       </div>
 
       <PatientForm

@@ -23,10 +23,10 @@ interface PatientComboboxProps {
 }
 
 /**
- * Buscador de paciente (combobox): imprescindible con cientos/miles de pacientes,
+ * Buscador de clienta (combobox): imprescindible con cientos/miles de clientas,
  * donde un <Select> plano es inusable. Busca por nombre, teléfono y email.
  */
-export function PatientCombobox({ patients, value, onValueChange, placeholder = 'Buscar paciente por nombre, teléfono o email…' }: PatientComboboxProps) {
+export function PatientCombobox({ patients, value, onValueChange, placeholder = 'Buscar clienta por nombre, teléfono o email…' }: PatientComboboxProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -80,7 +80,7 @@ export function PatientCombobox({ patients, value, onValueChange, placeholder = 
           <CommandList className="max-h-64">
             {results.length === 0 ? (
               <p className="py-6 text-center text-sm text-muted-foreground">
-                No se encontraron pacientes
+                No se encontraron clientas
               </p>
             ) : (
               <CommandGroup>
@@ -115,7 +115,7 @@ export function PatientCombobox({ patients, value, onValueChange, placeholder = 
             )}
             {patients.length > 50 && (
               <p className="border-t px-3 py-2 text-xs text-muted-foreground">
-                Mostrando {results.length} de {patients.length} pacientes — refiná la búsqueda
+                Mostrando {results.length} de {patients.length} clientas — refiná la búsqueda
               </p>
             )}
           </CommandList>

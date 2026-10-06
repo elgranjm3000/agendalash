@@ -28,7 +28,7 @@ export default function NewInvoicePage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Nueva Factura</h1>
         <p className="text-gray-600 mt-1">
-          Crea una nueva factura para un paciente
+          Crea una nueva factura para una clienta
         </p>
       </div>
       

@@ -7,6 +7,7 @@ import { ArrowLeft, Hospital, Building, Stethoscope, Loader2, CheckCircle2, Gift
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/password-input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CURRENCIES } from '@/lib/format';
@@ -38,28 +39,39 @@ const typeOptions: { value: OrganizationType; label: string; description: string
 export default function RegisterPage() {
   const router = useRouter();
 
-  const [orgName, setOrgName] = useState('');
   const [type, setType] = useState<OrganizationType>('clinic');
   const [currency, setCurrency] = useState('USD');
-  const [adminFirstName, setAdminFirstName] = useState('');
-  const [adminLastName, setAdminLastName] = useState('');
-  const [adminEmail, setAdminEmail] = useState('');
-  const [adminPassword, setAdminPassword] = useState('');
   const [logo, setLogo] = useState<string | null>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
-    if (!orgName || !adminFirstName || !adminLastName || !adminEmail || !adminPassword) {
+    // Se leen los valores del formulario al enviar (y no solo del estado de React):
+    // el autocompletado del navegador puede llenar los inputs sin disparar onChange.
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    const value = (name: string) => String(fd.get(name) ?? '').trim();
+    const orgName = value('orgName');
+    const adminFirstName = value('adminFirstName');
+    const adminLastName = value('adminLastName');
+    const adminEmail = value('adminEmail');
+    const adminPassword = String(fd.get('adminPassword') ?? '');
+    const adminPasswordConfirm = String(fd.get('adminPasswordConfirm') ?? '');
+
+    if (!orgName || !adminFirstName || !adminLastName || !adminEmail || !adminPassword || !adminPasswordConfirm) {
       setError('Todos los campos son obligatorios.');
       return;
     }
     if (adminPassword.length < 6) {
       setError('La contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
+    if (adminPassword !== adminPasswordConfirm) {
+      setError('Las contraseñas no coinciden.');
       return;
     }
 
@@ -148,9 +160,8 @@ export default function RegisterPage() {
                 <Label htmlFor="orgName">Nombre de la organización</Label>
                 <Input
                   id="orgName"
-                  placeholder="Ej: Clínica Santa María"
-                  value={orgName}
-                  onChange={(e) => setOrgName(e.target.value)}
+                  name="orgName"
+                  placeholder="Ej: Estudio Belleza & Pestañas"
                 />
               </div>
 
@@ -219,39 +230,49 @@ export default function RegisterPage() {
             <CardHeader>
               <CardTitle>Tu cuenta de administrador</CardTitle>
               <CardDescription>
-                Como administrador podrás invitar doctores, enfermeras y recepcionistas a tu organización.
+                Como administrador podrás invitar lash artists, asistentes y recepcionistas a tu organización.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="adminFirstName">Nombre</Label>
-                  <Input id="adminFirstName" value={adminFirstName} onChange={(e) => setAdminFirstName(e.target.value)} />
+                  <Input id="adminFirstName" name="adminFirstName" autoComplete="given-name" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="adminLastName">Apellido</Label>
-                  <Input id="adminLastName" value={adminLastName} onChange={(e) => setAdminLastName(e.target.value)} />
+                  <Input id="adminLastName" name="adminLastName" autoComplete="family-name" />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="adminEmail">Email</Label>
                 <Input
                   id="adminEmail"
+                  name="adminEmail"
                   type="email"
-                  placeholder="admin@tuclinica.com"
-                  value={adminEmail}
-                  onChange={(e) => setAdminEmail(e.target.value)}
+                  autoComplete="email"
+                  placeholder="admin@tuestudio.com"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="adminPassword">Contraseña</Label>
-                <Input
-                  id="adminPassword"
-                  type="password"
-                  placeholder="Mínimo 6 caracteres"
-                  value={adminPassword}
-                  onChange={(e) => setAdminPassword(e.target.value)}
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="adminPassword">Contraseña</Label>
+                  <PasswordInput
+                    id="adminPassword"
+                    name="adminPassword"
+                    autoComplete="new-password"
+                    placeholder="Mínimo 6 caracteres"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="adminPasswordConfirm">Repetir contraseña</Label>
+                  <PasswordInput
+                    id="adminPasswordConfirm"
+                    name="adminPasswordConfirm"
+                    autoComplete="new-password"
+                    placeholder="Repetí la contraseña"
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>

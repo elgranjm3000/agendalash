@@ -33,8 +33,8 @@ const roleColors: Record<string, string> = {
 const roleLabels: Record<string, string> = {
   super_admin: 'Super Admin',
   admin: 'Administrador',
-  doctor: 'Doctor',
-  nurse: 'Enfermera',
+  doctor: 'Lash Artist',
+  nurse: 'Asistente',
   receptionist: 'Recepcionista',
 };
 
@@ -124,8 +124,8 @@ export default function UsersPage() {
                 <SelectItem value="all">{t('Todos los roles')}</SelectItem>
                 <SelectItem value="super_admin">Super Admin</SelectItem>
                 <SelectItem value="admin">Administrador</SelectItem>
-                <SelectItem value="doctor">Doctor</SelectItem>
-                <SelectItem value="nurse">Enfermera</SelectItem>
+                <SelectItem value="doctor">Lash Artist</SelectItem>
+                <SelectItem value="nurse">Asistente</SelectItem>
                 <SelectItem value="receptionist">Recepcionista</SelectItem>
               </SelectContent>
             </Select>

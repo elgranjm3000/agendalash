@@ -271,7 +271,7 @@ export default function InventoryPage() {
             <Boxes className="h-8 w-8 text-rose-600" />
             Inventario
           </h1>
-          <p className="text-gray-600 mt-1">Insumos médicos con control de stock y reposición</p>
+          <p className="text-gray-600 mt-1">Insumos del estudio con control de stock y reposición</p>
         </div>
         <Button onClick={openNew} className="flex items-center gap-2 min-h-[44px]">
           <Plus className="h-4 w-4" />

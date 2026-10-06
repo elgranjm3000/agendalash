@@ -83,14 +83,14 @@ export default function Dashboard() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
         <p className="text-gray-600 mt-1">
-          Bienvenido al sistema de gestión de citas médicas
+          Bienvenido al sistema de gestión de tu estudio de pestañas
         </p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard
-          title="Total Pacientes"
+          title="Total Clientas"
           value={stats.totalPatients}
           icon={Users}
           color="blue"
@@ -184,7 +184,7 @@ export default function Dashboard() {
               <Link href="/patients/new">
                 <Button className="w-full justify-start" variant="outline">
                   <Users className="h-4 w-4 mr-2" />
-                  Nuevo Paciente
+                  Nueva Clienta
                 </Button>
               </Link>
               <Link href="/appointments/new">
@@ -218,7 +218,7 @@ export default function Dashboard() {
                 <div className="flex items-center space-x-3 text-sm">
                   <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
                   <span className="text-gray-600">
-                    {stats.totalPatients} pacientes en el sistema
+                    {stats.totalPatients} clientas en el sistema
                   </span>
                 </div>
                 <div className="flex items-center space-x-3 text-sm">

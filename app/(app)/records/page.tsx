@@ -49,7 +49,7 @@ export default function RecordsPage() {
   const [patientId, setPatientId] = useState('');
 
   useEffect(() => {
-    // auto-seleccionar si viene ?patient= desde la lista de pacientes
+    // auto-seleccionar si viene ?patient= desde la lista de clientas
     const q = new URLSearchParams(window.location.search).get('patient');
     if (q) setPatientId(q);
   }, []);
@@ -64,7 +64,7 @@ export default function RecordsPage() {
   }, [records, patientId]);
 
   const handleDelete = async (id: string) => {
-    if (confirm('¿Eliminar esta consulta de la historia clínica?')) {
+    if (confirm('¿Eliminar este registro de la ficha de clienta?')) {
       try {
         await deleteRecord(id);
         toast.success('Consulta eliminada');
@@ -89,10 +89,10 @@ export default function RecordsPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
             <Stethoscope className="h-8 w-8 text-rose-600" />
-            Historia Clínica
+            Ficha de clienta
           </h1>
           <p className="text-gray-600 mt-1">
-            Episodios de consulta con signos vitales, diagnóstico e indicaciones
+            Servicios y notas con diagnóstico técnico e indicaciones
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export default function RecordsPage() {
             <Link href={`/records/print?patient=${patientId}`}>
               <Button variant="outline" className="flex items-center gap-2">
                 <Printer className="h-4 w-4" />
-                Imprimir historia
+                Imprimir ficha
               </Button>
             </Link>
           )}
@@ -113,14 +113,14 @@ export default function RecordsPage() {
         </div>
       </div>
 
-      {/* Selector de paciente */}
+      {/* Selector de clienta */}
       <Card>
         <CardContent className="p-4">
           <PatientCombobox
             patients={patients}
             value={patientId}
             onValueChange={setPatientId}
-            placeholder="Buscar paciente para ver su historia clínica…"
+            placeholder="Buscar clienta para ver su ficha…"
           />
           {patient && (
             <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm text-gray-600 border-t border-gray-100 pt-3">
@@ -146,12 +146,12 @@ export default function RecordsPage() {
           <CardContent className="p-12 text-center">
             <FileText className="h-16 w-16 mx-auto text-gray-300 mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {patientId ? 'Sin consultas registradas' : 'Selecciona un paciente'}
+              {patientId ? 'Sin registros' : 'Selecciona una clienta'}
             </h3>
             <p className="text-gray-600 mb-6">
               {patientId
-                ? 'Registra la primera consulta para comenzar su historia clínica.'
-                : 'O consultá el historial completo de todas las consultas.'}
+                ? 'Registra el primer servicio para comenzar su ficha.'
+                : 'O consultá el historial completo de todos los servicios.'}
             </p>
             <Link href={`/records/new${patientId ? `?patient=${patientId}` : ''}`}>
               <Button>
@@ -174,11 +174,11 @@ export default function RecordsPage() {
                         {format(new Date(r.date), "d 'de' MMMM 'de' yyyy", { locale: es })}
                         {r.status === 'triaje' && (
                           <Badge className={cn('ml-2 align-middle', r.triageLevel === 'rojo' ? 'bg-red-100 text-red-800' : r.triageLevel === 'amarillo' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800')}>
-                            Triaje pendiente
+                            Nota de servicio pendiente
                           </Badge>
                         )}
                       </p>
-                      <p className="text-xs text-gray-500">Dr. {r.doctorName}</p>
+                      <p className="text-xs text-gray-500">Prof. {r.doctorName}</p>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
                       <Button variant="ghost" size="sm" asChild title="Recetar desde esta consulta">
@@ -204,12 +204,12 @@ export default function RecordsPage() {
 
                   {(r.bloodPressure || r.heartRate || r.temperature || r.weight || r.height || r.oxygenSat) && (
                     <div className="flex flex-wrap gap-2">
-                      <Vital icon={Activity} label="PA" value={r.bloodPressure} unit=" mmHg" />
-                      <Vital icon={HeartPulse} label="FC" value={r.heartRate} unit=" lpm" />
-                      <Vital icon={Thermometer} label="Temp" value={r.temperature} unit="°C" />
-                      <Vital icon={Weight} label="Peso" value={r.weight} unit=" kg" />
-                      <Vital icon={Ruler} label="Talla" value={r.height} unit=" m" />
-                      <Vital icon={Wind} label="SpO₂" value={r.oxygenSat} unit="%" />
+                      <Vital icon={Activity} label="Curva" value={r.bloodPressure} unit="" />
+                      <Vital icon={HeartPulse} label="Procesamiento" value={r.heartRate} unit=" min" />
+                      <Vital icon={Thermometer} label="Permante" value={r.temperature} unit=" ml" />
+                      <Vital icon={Weight} label="Fijador" value={r.weight} unit=" ml" />
+                      
+                      
                     </div>
                   )}
 
@@ -220,7 +220,7 @@ export default function RecordsPage() {
                   )}
                   {r.diagnostico && (
                     <p className="text-sm text-gray-700">
-                      <Badge className="bg-rose-100 text-rose-800 mr-1.5">Diagnóstico</Badge>
+                      <Badge className="bg-rose-100 text-rose-800 mr-1.5">Nota técnica</Badge>
                       {r.diagnostico}
                     </p>
                   )}

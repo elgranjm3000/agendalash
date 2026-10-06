@@ -28,7 +28,7 @@ export default function NewAppointmentPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Nueva Cita</h1>
         <p className="text-gray-600 mt-1">
-          Programa una nueva cita médica
+          Programa una nueva cita
         </p>
       </div>
       

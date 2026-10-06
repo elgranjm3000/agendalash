@@ -15,9 +15,9 @@ import { OrganizationType } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 const typeOptions: { value: OrganizationType; label: string; icon: typeof Hospital }[] = [
-  { value: 'hospital', label: 'Hospital', icon: Hospital },
-  { value: 'clinic', label: 'Clínica', icon: Building },
-  { value: 'private_doctor', label: 'Doctor Privado', icon: Stethoscope },
+  { value: 'hospital', label: 'Red de estudios', icon: Hospital },
+  { value: 'clinic', label: 'Estudio', icon: Building },
+  { value: 'private_doctor', label: 'Profesional independiente', icon: Stethoscope },
 ];
 
 export default function EditOrganizationPage() {

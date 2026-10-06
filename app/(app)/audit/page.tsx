@@ -35,9 +35,9 @@ const actionConfig: Record<string, { label: string; icon: typeof LogIn; badge: s
 
 const entityLabels: Record<string, string> = {
   users: 'Usuarios',
-  patients: 'Pacientes',
+  patients: 'Clientas',
   appointments: 'Citas',
-  prescriptions: 'Prescripciones',
+  prescriptions: 'Indicaciones',
   invoices: 'Facturas',
   organizations: 'Organizaciones',
 };

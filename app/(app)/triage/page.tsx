@@ -52,7 +52,7 @@ export default function TriagePage() {
     e.preventDefault();
     const patient = patients.find((p) => p.id === patientId);
     if (!patient) {
-      toast.error('Selecciona el paciente');
+      toast.error('Selecciona la clienta');
       return;
     }
     setSaving(true);
@@ -71,7 +71,7 @@ export default function TriagePage() {
         temperature: numOrNull(temperature),
         oxygenSat: numOrNull(oxygenSat),
       });
-      toast.success('Triaje registrado — el paciente está en la lista de espera');
+      toast.success('Llegada registrada — la clienta está en la lista de espera');
       setPatientId('');
       setMotivo('');
       setBloodPressure('');
@@ -79,7 +79,7 @@ export default function TriagePage() {
       setTemperature('');
       setOxygenSat('');
     } catch {
-      toast.error('No se pudo registrar el triaje');
+      toast.error('No se pudo registrar la llegada');
     } finally {
       setSaving(false);
     }
@@ -94,10 +94,10 @@ export default function TriagePage() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
           <Activity className="h-8 w-8 text-rose-600" />
-          Triaje
+          Notas de servicio
         </h1>
         <p className="text-gray-600 mt-1">
-          Registra al paciente que llega y su nivel de urgencia; el doctor completa la consulta después
+          Registra a la clienta que llega y el servicio solicitado; el profesional completa la nota después
         </p>
       </div>
 
@@ -105,18 +105,18 @@ export default function TriagePage() {
         {/* Formulario */}
         <Card>
           <CardHeader>
-            <CardTitle>Llegada de paciente</CardTitle>
-            <CardDescription>Toma los signos vitales básicos y clasificá la urgencia.</CardDescription>
+            <CardTitle>Llegada de clienta</CardTitle>
+            <CardDescription>Registra el estado de llegada de la clienta y su prioridad.</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label>Paciente</Label>
+                <Label>Clienta</Label>
                 <PatientCombobox
                   patients={patients}
                   value={patientId}
                   onValueChange={setPatientId}
-                  placeholder="Buscar paciente…"
+                  placeholder="Buscar clienta…"
                 />
               </div>
 
@@ -149,7 +149,7 @@ export default function TriagePage() {
                 <Label htmlFor="motivo">Motivo de llegada</Label>
                 <Input
                   id="motivo"
-                  placeholder="Ej: Dolor de cabeza desde ayer"
+                  placeholder="Ej: Llegó para su lifting de las 3 pm"
                   value={motivo}
                   onChange={(e) => setMotivo(e.target.value)}
                 />
@@ -157,25 +157,21 @@ export default function TriagePage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label htmlFor="t-bp">PA (mmHg)</Label>
-                  <Input id="t-bp" placeholder="120/80" value={bloodPressure} onChange={(e) => setBloodPressure(e.target.value)} />
+                  <Label htmlFor="t-bp">Curva estimada</Label>
+                  <Input id="t-bp" placeholder="C, D o L" value={bloodPressure} onChange={(e) => setBloodPressure(e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="t-hr" className="flex items-center gap-1"><Activity className="h-3.5 w-3.5" /> FC</Label>
-                  <Input id="t-hr" type="number" inputMode="numeric" placeholder="72" value={heartRate} onChange={(e) => setHeartRate(e.target.value)} />
+                  <Label htmlFor="t-hr" className="flex items-center gap-1"><Activity className="h-3.5 w-3.5" /> Tiempo estimado (min)</Label>
+                  <Input id="t-hr" placeholder="Lifting / extensiones" value={heartRate} onChange={(e) => setHeartRate(e.target.value)} />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="t-temp" className="flex items-center gap-1"><Thermometer className="h-3.5 w-3.5" /> Temp</Label>
-                  <Input id="t-temp" type="number" step="0.1" inputMode="decimal" placeholder="36.5" value={temperature} onChange={(e) => setTemperature(e.target.value)} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="t-spo2" className="flex items-center gap-1"><Wind className="h-3.5 w-3.5" /> SpO₂</Label>
-                  <Input id="t-spo2" type="number" inputMode="numeric" placeholder="98" value={oxygenSat} onChange={(e) => setOxygenSat(e.target.value)} />
+                <div className="space-y-2 sm:col-span-2">
+                  <Label htmlFor="t-temp" className="flex items-center gap-1"><Thermometer className="h-3.5 w-3.5" /> Observación de llegada</Label>
+                  <Input id="t-temp" placeholder="Ej: alergia a la lánula, pestañas sensibles" value={temperature} onChange={(e) => setTemperature(e.target.value)} />
                 </div>
               </div>
 
               <Button type="submit" disabled={saving} className="w-full min-h-[44px]">
-                Registrar triaje
+                Registrar llegada
               </Button>
             </form>
           </CardContent>
@@ -186,14 +182,14 @@ export default function TriagePage() {
           <CardHeader>
             <CardTitle>Lista de espera</CardTitle>
             <CardDescription>
-              {pending.length === 0 ? 'Sin pacientes en espera.' : `${pending.length} paciente(s) en espera de consulta.`}
+              {pending.length === 0 ? 'Sin clientas en espera.' : `${pending.length} clienta(s) en espera de servicio.`}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {pending.length === 0 && (
               <div className="p-8 text-center">
                 <CheckCircle2 className="h-12 w-12 mx-auto text-emerald-200 mb-2" />
-                <p className="text-sm text-gray-500">Todos los pacientes fueron atendidos.</p>
+                <p className="text-sm text-gray-500">Todas las clientas fueron atendidas.</p>
               </div>
             )}
             {pending.map((r) => {
@@ -209,9 +205,9 @@ export default function TriagePage() {
                     </div>
                     <Badge className={levelInfo.badge}>{levelInfo.label}</Badge>
                   </div>
-                  {(r.bloodPressure || r.heartRate) && (
+                  {(r.bloodPressure || r.heartRate || r.temperature) && (
                     <p className="text-xs text-gray-600">
-                      PA {r.bloodPressure ?? '—'} · FC {r.heartRate ?? '—'} · Temp {r.temperature ?? '—'}°C · SpO₂ {r.oxygenSat ?? '—'}%
+                      {[r.bloodPressure && `Curva ${r.bloodPressure}`, r.heartRate && r.heartRate, r.temperature].filter(Boolean).join(' · ')}
                     </p>
                   )}
                   <Button

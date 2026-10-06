@@ -64,7 +64,7 @@ export default function PrescriptionsPage() {
   });
 
   const handleDeletePrescription = (id: string) => {
-    if (confirm('¿Está seguro de que desea eliminar esta prescripción?')) {
+    if (confirm('¿Está seguro de que desea eliminar esta indicación?')) {
       deletePrescription(id);
     }
   };
@@ -94,13 +94,13 @@ export default function PrescriptionsPage() {
             Prescripciones Electrónicas
           </h1>
           <p className="text-gray-600 mt-1">
-            Gestiona todas las prescripciones médicas
+            Gestiona todas las indicaciones de servicio
           </p>
         </div>
         <Link href="/prescriptions/new">
           <Button className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
-            Nueva Prescripción
+            Nueva Indicación
           </Button>
         </Link>
       </div>
@@ -112,7 +112,7 @@ export default function PrescriptionsPage() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Buscar por paciente, diagnóstico o medicamento..."
+                placeholder="Buscar por clienta, nota técnica o producto..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -160,14 +160,14 @@ export default function PrescriptionsPage() {
             <p className="text-gray-600 mb-6">
               {searchTerm || statusFilter !== 'all'
                 ? 'Intenta ajustar los filtros de búsqueda'
-                : 'Comienza creando la primera prescripción médica'
+                : 'Comienza creando la primera indicación'
               }
             </p>
             {!searchTerm && statusFilter === 'all' && (
               <Link href="/prescriptions/new">
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
-                  Crear Primera Prescripción
+                  Crear Primera Indicación
                 </Button>
               </Link>
             )}
@@ -192,7 +192,7 @@ export default function PrescriptionsPage() {
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center text-sm text-gray-600">
                         <User className="h-4 w-4 mr-2" />
-                        <span>Dr. {prescription.doctorName}</span>
+                        <span>Prof. {prescription.doctorName}</span>
                       </div>
                       <div className="flex items-center text-sm text-gray-600">
                         <Calendar className="h-4 w-4 mr-2" />
@@ -203,12 +203,12 @@ export default function PrescriptionsPage() {
                     </div>
 
                     <div className="mb-4">
-                      <p className="text-sm font-medium text-gray-900 mb-1">Diagnóstico:</p>
+                      <p className="text-sm font-medium text-gray-900 mb-1">Nota técnica:</p>
                       <p className="text-sm text-gray-600">{prescription.diagnosis}</p>
                     </div>
 
                     <div className="mb-4">
-                      <p className="text-sm font-medium text-gray-900 mb-2">Medicamentos:</p>
+                      <p className="text-sm font-medium text-gray-900 mb-2">Productos:</p>
                       <div className="space-y-1">
                         {prescription.medications.slice(0, 3).map((medication) => (
                           <div key={medication.id} className="text-sm text-gray-600">
@@ -217,7 +217,7 @@ export default function PrescriptionsPage() {
                         ))}
                         {prescription.medications.length > 3 && (
                           <p className="text-sm text-gray-500">
-                            +{prescription.medications.length - 3} medicamentos más
+                            +{prescription.medications.length - 3} productos más
                           </p>
                         )}
                       </div>

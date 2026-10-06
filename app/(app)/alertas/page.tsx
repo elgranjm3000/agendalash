@@ -20,7 +20,7 @@ export default function AlertasPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-7xl mx-auto px-4 space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">{t('alerts.title')}</h1>
         <p className="text-sm text-muted-foreground">{t('alerts.subtitle')}</p>

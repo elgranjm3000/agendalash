@@ -47,7 +47,7 @@ export function PatientForm({ patient, onSubmit, onCancel }: PatientFormProps) {
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>
-          {patient ? 'Editar Paciente' : 'Nuevo Paciente'}
+          {patient ? 'Editar Clienta' : 'Nueva Clienta'}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -58,7 +58,7 @@ export function PatientForm({ patient, onSubmit, onCancel }: PatientFormProps) {
               <Input
                 id="firstName"
                 {...register('firstName', { required: 'El nombre es requerido' })}
-                placeholder="Nombre del paciente"
+                placeholder="Nombre de la clienta"
               />
               {errors.firstName && (
                 <p className="text-sm text-red-600 mt-1">{errors.firstName.message}</p>
@@ -70,7 +70,7 @@ export function PatientForm({ patient, onSubmit, onCancel }: PatientFormProps) {
               <Input
                 id="lastName"
                 {...register('lastName', { required: 'El apellido es requerido' })}
-                placeholder="Apellido del paciente"
+                placeholder="Apellido de la clienta"
               />
               {errors.lastName && (
                 <p className="text-sm text-red-600 mt-1">{errors.lastName.message}</p>
@@ -128,7 +128,7 @@ export function PatientForm({ patient, onSubmit, onCancel }: PatientFormProps) {
             <Input
               id="address"
               {...register('address', { required: 'La dirección es requerida' })}
-              placeholder="Dirección completa del paciente"
+              placeholder="Dirección completa de la clienta"
             />
             {errors.address && (
               <p className="text-sm text-red-600 mt-1">{errors.address.message}</p>
@@ -162,18 +162,18 @@ export function PatientForm({ patient, onSubmit, onCancel }: PatientFormProps) {
           </div>
 
           <div>
-            <Label htmlFor="medicalHistory">Historia Médica (Opcional)</Label>
+            <Label htmlFor="medicalHistory">Notas relevantes (Opcional)</Label>
             <Textarea
               id="medicalHistory"
               {...register('medicalHistory')}
-              placeholder="Información médica relevante del paciente..."
+              placeholder="Alergias y notas relevantes de la clienta..."
               rows={4}
             />
           </div>
 
           <div className="flex gap-4 pt-4">
             <Button type="submit" disabled={loading} className="flex-1">
-              {loading ? 'Guardando...' : (patient ? 'Actualizar' : 'Crear')} Paciente
+              {loading ? 'Guardando...' : (patient ? 'Actualizar' : 'Crear')} Clienta
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar

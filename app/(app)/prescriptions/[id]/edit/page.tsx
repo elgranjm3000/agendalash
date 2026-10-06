@@ -16,7 +16,7 @@ export default function EditPrescriptionPage() {
   const handleSubmit = async (prescriptionData: any) => {
     try {
       await updatePrescription(params.id, prescriptionData);
-      toast.success('Prescripción actualizada correctamente');
+      toast.success('Indicación actualizada correctamente');
       router.push('/prescriptions');
     } catch {
       toast.error('No se pudo guardar. Intentá de nuevo.');
@@ -38,7 +38,7 @@ export default function EditPrescriptionPage() {
   if (!prescription) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Prescripción no encontrada</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Indicación no encontrada</h1>
         <p className="text-gray-600">Puede que haya sido eliminada.</p>
       </div>
     );
@@ -47,8 +47,8 @@ export default function EditPrescriptionPage() {
   return (
     <div className="max-w-7xl mx-auto px-4">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Editar Prescripción</h1>
-        <p className="text-gray-600 mt-1">Modifica los datos de la prescripción</p>
+        <h1 className="text-3xl font-bold text-gray-900">Editar Indicación</h1>
+        <p className="text-gray-600 mt-1">Modifica los datos de la indicación</p>
       </div>
 
       <PrescriptionForm

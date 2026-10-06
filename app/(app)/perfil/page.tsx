@@ -266,7 +266,7 @@ export default function ProfilePage() {
         <Card>
           <CardHeader>
             <CardTitle>Logo de la organización</CardTitle>
-            <CardDescription>Aparece en las facturas, recetas e historias clínicas impresas.</CardDescription>
+            <CardDescription>Aparece en las facturas, indicaciones y fichas impresas.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">

@@ -152,7 +152,7 @@ export default function ReportsPage() {
           Reportes y Análisis
         </h1>
         <p className="text-gray-600 mt-1">
-          Análisis detallado del rendimiento de la clínica
+          Análisis detallado del rendimiento del estudio
         </p>
       </div>
 
@@ -162,7 +162,7 @@ export default function ReportsPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Pacientes</p>
+                <p className="text-sm font-medium text-gray-600">Total Clientas</p>
                 <p className="text-3xl font-bold text-gray-900">{stats.totalPatients}</p>
                 <p className="text-sm text-emerald-600 flex items-center mt-1">
                   <TrendingUp className="h-4 w-4 mr-1" />
@@ -229,10 +229,10 @@ export default function ReportsPage() {
         </Card>
       </div>
 
-      {/* Actividad por médico */}
+      {/* Actividad por profesional */}
       <Card>
         <CardHeader>
-          <CardTitle>Actividad por Médico</CardTitle>
+          <CardTitle>Actividad por Profesional</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           {doctorStats.length === 0 ? (
@@ -253,7 +253,7 @@ export default function ReportsPage() {
                 <tbody>
                   {doctorStats.map((d) => (
                     <tr key={d.doctor} className="border-b border-gray-100">
-                      <td className="py-2.5 px-6 font-medium text-gray-900">Dr. {d.doctor}</td>
+                      <td className="py-2.5 px-6 font-medium text-gray-900">Prof. {d.doctor}</td>
                       <td className="py-2.5 px-6 text-right tabular-nums">{d.total}</td>
                       <td className="py-2.5 px-6 text-right tabular-nums text-emerald-700">{d.completed}</td>
                       <td className="py-2.5 px-6 text-right tabular-nums text-red-600">{d.cancelled}</td>
@@ -377,7 +377,7 @@ export default function ReportsPage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-gray-900">{stats.newPatientsThisMonth}</p>
-                    <p className="text-sm text-gray-600">Nuevos pacientes</p>
+                    <p className="text-sm text-gray-600">Nuevas clientas</p>
                   </div>
                 </div>
               </div>

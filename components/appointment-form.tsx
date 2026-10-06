@@ -91,26 +91,26 @@ export function AppointmentForm({ appointment, onSubmit, onCancel }: Appointment
       <CardContent>
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
           <div>
-            <Label htmlFor="patientId">{t('Paciente')}</Label>
+            <Label htmlFor="patientId">{t('Clienta')}</Label>
             <PatientCombobox
               patients={patients}
               value={selectedPatientId || ''}
               onValueChange={(value) => setValue('patientId', value)}
             />
             {errors.patientId && (
-              <p className="text-sm text-red-600 mt-1">Debe seleccionar un paciente</p>
+              <p className="text-sm text-red-600 mt-1">Debe seleccionar una clienta</p>
             )}
           </div>
 
           <div>
-            <Label htmlFor="doctorId">Doctor</Label>
+            <Label htmlFor="doctorId">Profesional</Label>
             <Select 
               onValueChange={(value) => setValue('doctorId', value)} 
               defaultValue={appointment?.doctorId || (user?.role === 'doctor' ? user.id : '')}
               disabled={user?.role === 'doctor'}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Seleccionar doctor" />
+                <SelectValue placeholder="Seleccionar profesional" />
               </SelectTrigger>
               <SelectContent>
                 {doctors.map((doctor) => (
@@ -121,7 +121,7 @@ export function AppointmentForm({ appointment, onSubmit, onCancel }: Appointment
               </SelectContent>
             </Select>
             {errors.doctorId && (
-              <p className="text-sm text-red-600 mt-1">Debe seleccionar un doctor</p>
+              <p className="text-sm text-red-600 mt-1">Debe seleccionar un profesional</p>
             )}
           </div>
 

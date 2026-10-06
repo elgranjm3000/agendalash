@@ -123,8 +123,8 @@ export function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="admin">Administrador</SelectItem>
-                <SelectItem value="doctor">Doctor</SelectItem>
-                <SelectItem value="nurse">Enfermera</SelectItem>
+                <SelectItem value="doctor">Lash Artist</SelectItem>
+                <SelectItem value="nurse">Asistente</SelectItem>
                 <SelectItem value="receptionist">Recepcionista</SelectItem>
               </SelectContent>
             </Select>

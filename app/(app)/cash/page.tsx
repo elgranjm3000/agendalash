@@ -269,7 +269,7 @@ export default function CashPage() {
               <Label htmlFor="concept">Concepto</Label>
               <Input
                 id="concept"
-                placeholder={type === 'ingreso' ? 'Ej: Cobro consulta Dr. Pérez' : 'Ej: Compra de insumos'}
+                placeholder={type === 'ingreso' ? 'Ej: Cobro de servicio a clienta' : 'Ej: Compra de insumos'}
                 value={concept}
                 onChange={(e) => setConcept(e.target.value)}
               />

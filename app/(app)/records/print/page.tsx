@@ -52,7 +52,7 @@ function PrintRecordContent() {
                 <h1 className="text-2xl font-bold text-rose-700 tracking-tight">{orgName || 'AgendaLash'}</h1>
               </div>
               <div>
-                <p className="mt-1 text-sm text-gray-500">Historia Clínica</p>
+                <p className="mt-1 text-sm text-gray-500">Ficha de clienta</p>
               </div>
               <div className="text-right text-sm text-gray-500">
                 <p>
@@ -64,10 +64,10 @@ function PrintRecordContent() {
               </div>
             </div>
 
-            {/* Datos del paciente */}
+            {/* Datos de la clienta */}
             <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-1 text-sm">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Paciente</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Clienta</p>
                 <p className="text-lg font-semibold">{patient.firstName} {patient.lastName}</p>
               </div>
               <div className="space-y-0.5">
@@ -101,11 +101,11 @@ function PrintRecordContent() {
                       <p className="font-semibold">
                         {format(new Date(r.date), "d 'de' MMMM 'de' yyyy", { locale: es })}
                       </p>
-                      <p className="text-xs text-gray-500">Dr. {r.doctorName}</p>
+                      <p className="text-xs text-gray-500">Prof. {r.doctorName}</p>
                     </div>
                     {(r.bloodPressure || r.heartRate || r.temperature || r.weight || r.oxygenSat) && (
                       <p className="mt-1 text-xs text-gray-600">
-                        PA {r.bloodPressure || '—'} mmHg · FC {r.heartRate ?? '—'} lpm · Temp {r.temperature ?? '—'}°C · Peso {r.weight ?? '—'} kg · SpO₂ {r.oxygenSat ?? '—'}%
+                        Curva {r.bloodPressure || '—'} · Procesamiento {r.heartRate ?? '—'} min · Permante {r.temperature ?? '—'} ml · Fijador {r.weight ?? '—'} ml
                       </p>
                     )}
                     {r.motivo && (
@@ -115,7 +115,7 @@ function PrintRecordContent() {
                       <p className="mt-0.5 text-sm text-gray-700">{r.enfermedadActual}</p>
                     )}
                     {r.diagnostico && (
-                      <p className="mt-0.5 text-sm"><strong>Diagnóstico:</strong> {r.diagnostico}</p>
+                      <p className="mt-0.5 text-sm"><strong>Nota técnica:</strong> {r.diagnostico}</p>
                     )}
                     {r.indicaciones && (
                       <p className="mt-0.5 text-sm text-gray-600"><strong>Indicaciones:</strong> {r.indicaciones}</p>
@@ -149,15 +149,15 @@ function PrintRecordContent() {
               <div className="mt-16 flex justify-end">
                 <div className="w-72 text-center break-inside-avoid">
                   <div className="border-t border-gray-400 pt-2">
-                    <p className="text-sm font-semibold">Dr. {lastDoctor.doctorName}</p>
-                    <p className="mt-1 text-xs text-gray-400">Médico tratante — Firma y sello</p>
+                    <p className="text-sm font-semibold">Prof. {lastDoctor.doctorName}</p>
+                    <p className="mt-1 text-xs text-gray-400">Profesional tratante — Firma y sello</p>
                   </div>
                 </div>
               </div>
             )}
 
             <div className="mt-12 border-t border-gray-200 pt-4 text-xs text-gray-400">
-              Generado por AgendaLash — Documento confidencial protegido por secreto médico.
+              Generado por AgendaLash — Documento confidencial del estudio.
             </div>
           </div>
         );

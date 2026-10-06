@@ -29,7 +29,7 @@ const features = [
   {
     icon: ClipboardList,
     title: 'Fichas de clientas',
-    text: 'Historia de cada clienta: servicios, curvas usadas, alergias y notas en un solo expediente.',
+    text: 'Ficha de cada clienta: servicios, curvas usadas, alergias y notas en un solo lugar.',
   },
   {
     icon: Package,

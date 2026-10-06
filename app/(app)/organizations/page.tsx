@@ -25,9 +25,9 @@ import { useOrganizations } from '@/hooks/use-organizations';
 import { OrganizationType } from '@/lib/types';
 
 const typeConfig: Record<OrganizationType, { label: string; icon: typeof Hospital; badge: string }> = {
-  hospital: { label: 'Hospital', icon: Hospital, badge: 'bg-red-100 text-red-800' },
-  clinic: { label: 'Clínica', icon: Building, badge: 'bg-rose-100 text-rose-800' },
-  private_doctor: { label: 'Doctor Privado', icon: Stethoscope, badge: 'bg-emerald-100 text-emerald-800' },
+  hospital: { label: 'Red de estudios', icon: Hospital, badge: 'bg-red-100 text-red-800' },
+  clinic: { label: 'Estudio', icon: Building, badge: 'bg-rose-100 text-rose-800' },
+  private_doctor: { label: 'Profesional independiente', icon: Stethoscope, badge: 'bg-emerald-100 text-emerald-800' },
 };
 
 export default function OrganizationsPage() {
@@ -87,7 +87,7 @@ export default function OrganizationsPage() {
             Organizaciones
           </h1>
           <p className="text-gray-600 mt-1">
-            Hospitales, clínicas y doctores privados registrados en la plataforma
+            Estudios de pestañas y profesionales registrados en la plataforma
           </p>
         </div>
         <Link href="/organizations/new">
@@ -118,9 +118,9 @@ export default function OrganizationsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('Todos los tipos')}</SelectItem>
-                <SelectItem value="hospital">{t('Hospital')}</SelectItem>
-                <SelectItem value="clinic">{t('Clínica')}</SelectItem>
-                <SelectItem value="private_doctor">{t('Doctor Privado')}</SelectItem>
+                <SelectItem value="hospital">{t('Red de estudios')}</SelectItem>
+                <SelectItem value="clinic">{t('Estudio')}</SelectItem>
+                <SelectItem value="private_doctor">{t('Profesional independiente')}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -220,7 +220,7 @@ export default function OrganizationsPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="text-sm text-gray-600">
-                    Cada organización tiene su propio admin, usuarios, pacientes y datos aislados.
+                    Cada organización tiene su propio admin, usuarios, clientas y datos aislados.
                   </div>
                   <div className="text-xs text-gray-500 pt-2 border-t">
                     Creada: {format(new Date(org.createdAt), 'dd MMM yyyy', { locale: es })}

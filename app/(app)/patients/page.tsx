@@ -38,9 +38,9 @@ export default function PatientsPage() {
   );
 
   const handleDeletePatient = (id: string) => {
-    if (confirm('¿Está seguro de que desea eliminar este paciente?')) {
+    if (confirm('¿Está seguro de que desea eliminar esta clienta?')) {
       deletePatient(id)
-        .then(() => toast.success(t('Paciente eliminado junto con sus citas, recetas y facturas')))
+        .then(() => toast.success(t('Clienta eliminada junto con sus citas, indicaciones y facturas')))
         .catch(() => toast.error(t('No se pudo eliminar. Intentá de nuevo.')));
     }
   };
@@ -75,16 +75,16 @@ export default function PatientsPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
             <Users className="h-8 w-8 text-rose-600" />
-            Pacientes
+            Clientas
           </h1>
           <p className="text-gray-600 mt-1">
-            Gestiona la información de todos los pacientes
+            Gestiona la información de todas las clientas
           </p>
         </div>
         <Link href="/patients/new">
           <Button className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
-            Nuevo Paciente
+            Nueva Clienta
           </Button>
         </Link>
       </div>
@@ -95,7 +95,7 @@ export default function PatientsPage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Buscar pacientes por nombre, email o teléfono..."
+              placeholder="Buscar clientas por nombre, email o teléfono..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -110,19 +110,19 @@ export default function PatientsPage() {
           <CardContent className="p-12 text-center">
             <Users className="h-16 w-16 mx-auto text-gray-300 mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {searchTerm ? 'No se encontraron pacientes' : 'No hay pacientes registrados'}
+              {searchTerm ? 'No se encontraron clientas' : 'No hay clientas registradas'}
             </h3>
             <p className="text-gray-600 mb-6">
               {searchTerm 
                 ? 'Intenta con otros términos de búsqueda'
-                : 'Comienza agregando tu primer paciente al sistema'
+                : 'Comienza agregando tu primera clienta al sistema'
               }
             </p>
             {!searchTerm && (
               <Link href="/patients/new">
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
-                  Agregar Primer Paciente
+                  Agregar Primera Clienta
                 </Button>
               </Link>
             )}

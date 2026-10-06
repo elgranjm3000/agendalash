@@ -18,20 +18,20 @@ import { useLang } from '@/contexts/i18n-context';
 const typeOptions: { value: OrganizationType; label: string; description: string; icon: typeof Hospital }[] = [
   {
     value: 'hospital',
-    label: 'Hospital',
-    description: 'Institución de salud de alta complejidad con múltiples servicios y especialidades.',
+    label: 'Red de estudios',
+    description: 'Varios salones o sucursales bajo una misma marca.',
     icon: Hospital,
   },
   {
     value: 'clinic',
-    label: 'Clínica',
-    description: 'Centro médico con consultas, procedimientos y atención ambulatoria.',
+    label: 'Estudio',
+    description: 'Estudio de pestañas con servicios, tratamientos y atención de clientas.',
     icon: Building,
   },
   {
     value: 'private_doctor',
-    label: 'Doctor Privado',
-    description: 'Profesional independiente que gestiona su propia consulta.',
+    label: 'Profesional independiente',
+    description: 'Lash artist que trabaja por cuenta propia.',
     icon: Stethoscope,
   },
 ];
@@ -89,7 +89,7 @@ export default function NewOrganizationPage() {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{t('Nueva Organización')}</h1>
             <p className="text-gray-600 mt-1">
-              Registra un hospital, clínica o doctor privado con su cuenta de administrador
+              Registra un estudio de pestañas o profesional independiente con su cuenta de administrador
             </p>
           </div>
         </div>
@@ -139,7 +139,7 @@ export default function NewOrganizationPage() {
                 <Label htmlFor="name">{t('Nombre')}</Label>
                 <Input
                   id="name"
-                  placeholder="Ej: Hospital General San Martín"
+                  placeholder="Ej: Estudio Belleza & Pestañas"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
@@ -197,7 +197,7 @@ export default function NewOrganizationPage() {
                 <Input
                   id="adminEmail"
                   type="email"
-                  placeholder="admin@hospital.com"
+                  placeholder="admin@estudio.com"
                   value={adminEmail}
                   onChange={(e) => setAdminEmail(e.target.value)}
                 />

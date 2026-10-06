@@ -67,10 +67,10 @@ export default function PrintInvoicePage() {
               </div>
             </div>
 
-            {/* Datos del paciente y fechas */}
+            {/* Datos de la clienta y fechas */}
             <div className="mt-8 grid grid-cols-2 gap-8 text-sm">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">{t('Paciente')}</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">{t('Clienta')}</p>
                 <p className="mt-1 text-base font-semibold">{invoice.patientName}</p>
               </div>
               <div className="text-right space-y-1">

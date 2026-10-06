@@ -96,7 +96,7 @@ export default function AppointmentsPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
             <Calendar className="h-8 w-8 text-rose-600" />
-            Citas Médicas
+            Citas
           </h1>
           <p className="text-gray-600 mt-1">
             Gestiona todas las citas programadas
@@ -117,7 +117,7 @@ export default function AppointmentsPage() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                placeholder={t('Buscar por paciente o notas...')}
+                placeholder={t('Buscar por clienta o notas...')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -180,7 +180,7 @@ export default function AppointmentsPage() {
             <p className="text-gray-600 mb-6">
               {searchTerm || statusFilter !== 'all' || typeFilter !== 'all'
                 ? 'Intenta ajustar los filtros de búsqueda'
-                : 'Comienza programando la primera cita médica'
+                : 'Comienza programando la primera cita'
               }
             </p>
             {!searchTerm && statusFilter === 'all' && typeFilter === 'all' && (

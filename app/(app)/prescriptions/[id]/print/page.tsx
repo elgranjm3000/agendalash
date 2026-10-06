@@ -38,7 +38,7 @@ export default function PrintPrescriptionPage() {
                 <h1 className="text-2xl font-bold text-rose-700 tracking-tight">{orgName || 'AgendaLash'}</h1>
               </div>
               <div>
-                <p className="mt-1 text-sm text-gray-500">{t('Receta médica')}</p>
+                <p className="mt-1 text-sm text-gray-500">{t('Indicación')}</p>
               </div>
               <div className="text-right">
                 <p className="text-4xl font-bold leading-none text-rose-600">℞</p>
@@ -48,14 +48,14 @@ export default function PrintPrescriptionPage() {
               </div>
             </div>
 
-            {/* Doctor y paciente */}
+            {/* Profesional y clienta */}
             <div className="mt-8 grid grid-cols-2 gap-8 text-sm">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">{t('Profesional')}</p>
-                <p className="mt-1 text-base font-semibold">Dr. {rx.doctorName}</p>
+                <p className="mt-1 text-base font-semibold">Prof. {rx.doctorName}</p>
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">{t('Paciente')}</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">{t('Clienta')}</p>
                 <p className="mt-1 text-base font-semibold">{rx.patientName}</p>
               </div>
             </div>
@@ -63,20 +63,20 @@ export default function PrintPrescriptionPage() {
               Fecha de emisión: <span className="font-medium text-gray-900">{fecha}</span>
             </div>
 
-            {/* Diagnóstico */}
+            {/* Nota técnica */}
             {rx.diagnosis && (
               <div className="mt-8">
-                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">{t('Diagnóstico')}</p>
+                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">{t('Nota técnica')}</p>
                 <p className="mt-1 text-sm">{rx.diagnosis}</p>
               </div>
             )}
 
-            {/* Medicamentos */}
+            {/* Productos */}
             <div className="mt-8">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-y border-gray-200 bg-gray-50 text-left">
-                    <th className="py-2.5 pr-4 pl-3 text-xs font-semibold uppercase tracking-widest text-gray-500">{t('Medicamento')}</th>
+                    <th className="py-2.5 pr-4 pl-3 text-xs font-semibold uppercase tracking-widest text-gray-500">{t('Producto')}</th>
                     <th className="py-2.5 px-4 text-xs font-semibold uppercase tracking-widest text-gray-500">{t('Dosis')}</th>
                     <th className="py-2.5 px-4 text-xs font-semibold uppercase tracking-widest text-gray-500">{t('Frecuencia')}</th>
                     <th className="py-2.5 px-4 text-xs font-semibold uppercase tracking-widest text-gray-500">{t('Duración')}</th>
@@ -110,14 +110,14 @@ export default function PrintPrescriptionPage() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={doctor.signature}
-                    alt={`Firma del Dr. ${rx.doctorName}`}
+                    alt={`Firma de ${rx.doctorName}`}
                     className="mx-auto mb-1 h-20 object-contain object-bottom"
                   />
                 )}
                 <div className="border-t border-gray-400 pt-2">
-                  <p className="text-sm font-semibold">Dr. {rx.doctorName}</p>
+                  <p className="text-sm font-semibold">Prof. {rx.doctorName}</p>
                   <p className="text-xs text-gray-500">
-                    {doctor ? roleLabels[doctor.role] : 'Médico'} · Matricula profesional
+                    {doctor ? roleLabels[doctor.role] : 'Profesional'} · Registro profesional
                   </p>
                   <p className="mt-1 text-xs text-gray-400">{t('Firma y sello')}</p>
                 </div>
