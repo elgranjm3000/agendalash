@@ -24,12 +24,12 @@ const features = [
   {
     icon: Calendar,
     title: 'Agenda de servicios',
-    text: 'Lash lifting, extensiones y más: cada servicio con su duración, sin choques de horario.',
+    text: 'Extensiones y Lifting de Pestañas, Perfilado de cejas, manicure, configura tiempos y evita choques de horario.',
   },
   {
     icon: ClipboardList,
-    title: 'Fichas de clientas',
-    text: 'Ficha de cada clienta: servicios, curvas usadas, alergias y notas en un solo lugar.',
+    title: 'Fichas Digitales',
+    text: 'Registro de cada cliente: servicios prestados, insumos utilizados, notas importantes (alergias) y consentimientos.',
   },
   {
     icon: Package,
@@ -162,12 +162,11 @@ export function LandingPage() {
             7 días gratis · Sin tarjeta
           </span>
           <h1 className="mt-6 text-4xl md:text-6xl font-bold tracking-tight text-balance leading-[1.1]">
-            El sistema que ordena tu{' '}
-            <span className="text-rose-600">estudio de pestañas</span> en un solo lugar
+            Gestión premium para salones de{' '}
+            <span className="text-rose-600">lashistas y manicuristas</span>
           </h1>
           <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto text-pretty leading-relaxed">
-            Agenda, fichas de clientas, insumos con cobertura proyectada
-            y facturación. Diseñado para lash artists y salones de belleza.
+            Transforma tu pasión por la belleza en un negocio organizado.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="/registrarse">
@@ -203,11 +202,12 @@ export function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-balance">
-              Todo lo que tu estudio necesita
+              Todo lo que tu salón necesita
             </h2>
             <p className="mt-4 text-gray-600 text-pretty">
-              Deja atrás los cuadernos y los Excel. AgendaLash conecta tu agenda
-              con tu stock y el dinero de tu negocio.
+              Digitaliza tu estudio. AgendaLash sincroniza tus citas, stock y
+              finanzas en tiempo real, todo en una plataforma inteligente.
+              Adiós cuadernos, hola control absoluto.
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

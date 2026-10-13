@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     locale: 'es_VE',
     url: '/',
     siteName: 'AgendaLash',
-    title: 'AgendaLash — El sistema que ordena tu estudio de pestañas en un solo lugar',
+    title: 'AgendaLash — Gestión premium para salones de lashistas y manicuristas',
     description:
       'Agenda, fichas de clientas, insumos con cobertura proyectada y facturación en dólares. Prueba gratis 7 días, sin tarjeta.',
   },
