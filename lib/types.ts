@@ -133,11 +133,19 @@ export type StockMovementType = 'entrada' | 'salida';
 export interface InventoryItem {
   id: string;
   organizationId?: string | null;
+  /** Identificador del insumo dentro del salón (obligatorio, único por organización) */
+  sku: string;
   name: string;
   category?: string;
+  /** Unidad de compra: lo que se le pide al proveedor (frasco, caja, paquete…) */
   unit: string;
+  /** Cuántas unidades de medida trae una unidad de compra (ml por frasco, unidades por caja) */
+  packSize: number;
+  /** Unidad de medida del stock (ml, g, unidad…). Es la que se usa en recetas y cobertura */
+  measureUnit: string;
   stock: number;
   minStock: number;
+  /** Precio de una unidad de compra (del frasco, no del ml) */
   cost?: number | null;
   supplier?: string | null;
   /** Consumible de consulta: se descuenta 1 unidad al completar una cita */

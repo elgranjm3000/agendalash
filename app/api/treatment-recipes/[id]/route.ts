@@ -19,5 +19,12 @@ export const GET = async (request: Request, context: { params: { id: string } })
   return NextResponse.json(recipe);
 };
 
-export const PATCH = handlers.PATCH;
+// PATCH también devuelve la receta con sus ítems, por el mismo motivo que el POST.
+export const PATCH = async (request: Request, context: { params: { id: string } }) => {
+  const response = await handlers.PATCH(request, context);
+  if (response.status >= 400) return response;
+  const updated = await response.json();
+  return NextResponse.json((await getRecipeWithItems(context.params.id)) ?? updated, { status: response.status });
+};
+
 export const DELETE = handlers.DELETE;

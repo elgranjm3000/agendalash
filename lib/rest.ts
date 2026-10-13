@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { InValue } from '@libsql/client';
-import { db, ensureDb } from './db';
+import { db, ensureDb, InValue } from './db';
 import { audit } from './audit';
 
 export interface EntityConfig {
@@ -11,6 +10,12 @@ export interface EntityConfig {
   booleanFields?: string[];
   /** si la tabla es multi-tenant, la columna organizationId debe estar en columns */
   tenant?: boolean;
+  /** Campos obligatorios: columna → etiqueta humana para el mensaje de error. */
+  requiredFields?: Record<string, string>;
+  /** Campos numéricos que deben ser mayores que 0 (columna → etiqueta humana). */
+  positiveFields?: Record<string, string>;
+  /** Mensaje si un INSERT/UPDATE choca con un índice único (409). */
+  uniqueConflictMessage?: string;
   /** Lógica posterior a la creación (p. ej. descontar inventario). */
   afterCreate?: (data: Record<string, unknown>, requester: Requester) => Promise<unknown[]>;
   /** Lógica posterior a la actualización; prev es la fila antes del cambio. */
@@ -83,6 +88,34 @@ function effectiveOrgId(request: Request, requester: Requester): string | null {
   return requester.organizationId;
 }
 
+/**
+ * Valida los campos obligatorios de la config y recorta los de texto (para que
+ * el índice único no se burle con espacios). Con `partial` (PATCH) solo se
+ * revisan los campos presentes en el body, para no bloquear ediciones parciales.
+ * Devuelve el mensaje de error o null si está todo bien.
+ */
+function prepareRequired(config: EntityConfig, body: Record<string, unknown>, partial: boolean): string | null {
+  for (const [col, label] of Object.entries(config.requiredFields ?? {})) {
+    if (partial && !(col in body)) continue;
+    const value = body[col];
+    const empty = value === undefined || value === null || (typeof value === 'string' && value.trim() === '');
+    if (empty) return `El campo ${label} es obligatorio`;
+    if (typeof value === 'string') body[col] = value.trim();
+  }
+  // Un 0 o un negativo en estos campos rompe las cuentas derivadas (división por envase)
+  for (const [col, label] of Object.entries(config.positiveFields ?? {})) {
+    if (partial && !(col in body)) continue;
+    const value = Number(body[col]);
+    if (!Number.isFinite(value) || value <= 0) return `El campo ${label} debe ser mayor que 0`;
+  }
+  return null;
+}
+
+/** ¿Es un choque contra un índice único de PostgreSQL? */
+function isUniqueViolation(e: unknown): boolean {
+  return typeof e === 'object' && e !== null && (e as { code?: string }).code === '23505';
+}
+
 function serialize(config: EntityConfig, data: Record<string, unknown>): Record<string, InValue> {
   const row: Record<string, InValue> = {};
   for (const col of config.columns) {
@@ -151,6 +184,11 @@ export function makeCollectionHandlers(config: EntityConfig) {
     await ensureDb();
     const body = await request.json();
 
+    const missing = prepareRequired(config, body, false);
+    if (missing) {
+      return NextResponse.json({ error: missing }, { status: 400 });
+    }
+
     if (config.tenant) {
       const requestedOrg = body.organizationId ?? null;
       if (requester.role === 'super_admin') {
@@ -174,7 +212,17 @@ export function makeCollectionHandlers(config: EntityConfig) {
     const row = serialize(config, data);
     const names = Object.keys(row).join(', ');
     const placeholders = Object.keys(row).map(() => '?').join(', ');
-    await db.execute({ sql: `INSERT INTO "${config.table}" (${names}) VALUES (${placeholders})`, args: Object.values(row) });
+    try {
+      await db.execute({ sql: `INSERT INTO "${config.table}" (${names}) VALUES (${placeholders})`, args: Object.values(row) });
+    } catch (e) {
+      if (isUniqueViolation(e)) {
+        return NextResponse.json(
+          { error: config.uniqueConflictMessage ?? 'Ya existe un registro con ese valor' },
+          { status: 409 }
+        );
+      }
+      throw e;
+    }
     await logOp(requester, request, 'create', config, data.id as string);
     let warnings: unknown[] = [];
     if (config.afterCreate) {
@@ -222,6 +270,11 @@ export function makeItemHandlers(config: EntityConfig) {
     await ensureDb();
     const body = await request.json();
 
+    const missing = prepareRequired(config, body, true);
+    if (missing) {
+      return NextResponse.json({ error: missing }, { status: 400 });
+    }
+
     // Verificar que el registro pertenece a la organización del usuario
     const existing = await db.execute({
       sql: `SELECT ${cols} FROM "${config.table}" WHERE id = ?`,
@@ -241,15 +294,27 @@ export function makeItemHandlers(config: EntityConfig) {
     for (const col of config.columns) {
       if (col in body) data[col] = body[col];
     }
+    // Las claves deben ir entrecomilladas: PostgreSQL pliega los identificadores
+    // sin comillas a minúsculas y "updatedAt" no existiría como "updatedat".
     const row = Object.fromEntries(
-      Object.keys(data).map(col => [col, serialize(config, { [col]: data[col] })[`"${col}"`]])
+      Object.keys(data).map(col => [`"${col}"`, serialize(config, { [col]: data[col] })[`"${col}"`]])
     );
     const assignments = Object.keys(row).map(k => `${k} = ?`).join(', ');
     const args = [...Object.values(row), params.id];
-    await db.execute({
-      sql: `UPDATE "${config.table}" SET ${assignments} WHERE id = ?`,
-      args,
-    });
+    try {
+      await db.execute({
+        sql: `UPDATE "${config.table}" SET ${assignments} WHERE id = ?`,
+        args,
+      });
+    } catch (e) {
+      if (isUniqueViolation(e)) {
+        return NextResponse.json(
+          { error: config.uniqueConflictMessage ?? 'Ya existe un registro con ese valor' },
+          { status: 409 }
+        );
+      }
+      throw e;
+    }
     await logOp(requester, request, 'update', config, params.id);
     let warnings: unknown[] = [];
     if (config.afterUpdate) {
@@ -426,10 +491,15 @@ export const cashEntriesConfig: EntityConfig = {
 
 export const inventoryItemsConfig: EntityConfig = {
   table: 'inventory_items',
-  columns: ['id', 'organizationId', 'name', 'category', 'unit', 'stock', 'minStock', 'cost', 'supplier', 'deductOnConsult', 'createdAt', 'updatedAt'],
-  numberFields: ['stock', 'minStock', 'cost'],
+  columns: ['id', 'organizationId', 'sku', 'name', 'category', 'unit', 'packSize', 'measureUnit', 'stock', 'minStock', 'cost', 'supplier', 'deductOnConsult', 'createdAt', 'updatedAt'],
+  numberFields: ['packSize', 'stock', 'minStock', 'cost'],
   booleanFields: ['deductOnConsult'],
   tenant: true,
+  // El SKU identifica el insumo dentro del salón; la unidad de medida da sentido al stock
+  // y el contenido por unidad de compra (ml por frasco) permite pasar de una escala a la otra.
+  requiredFields: { sku: 'SKU', measureUnit: 'Unidad de medida', packSize: 'Contenido por unidad de compra' },
+  positiveFields: { packSize: 'Contenido por unidad de compra' },
+  uniqueConflictMessage: 'Ya existe un insumo con ese SKU en tu salón',
 };
 
 export const stockMovementsConfig: EntityConfig = {

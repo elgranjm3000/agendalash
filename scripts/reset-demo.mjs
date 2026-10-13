@@ -1,18 +1,9 @@
 // Resetea la base de datos completa y siembra datos demo de AgendaLash.
 // Uso: node scripts/reset-demo.mjs   (BORRA TODOS LOS DATOS — pedir confirmación)
-import { createClient } from '@libsql/client';
+import { db, closeDb } from './pg.mjs';
 import bcrypt from 'bcryptjs';
 import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-
-const env = Object.fromEntries(
-  readFileSync(new URL('../.env.local', import.meta.url), 'utf8')
-    .split('\n')
-    .filter((l) => l.includes('=') && !l.trim().startsWith('#'))
-    .map((l) => [l.slice(0, l.indexOf('=')).trim(), l.slice(l.indexOf('=') + 1).trim()])
-);
-
-const db = createClient({ url: env.TURSO_DATABASE_URL, authToken: env.TURSO_AUTH_TOKEN });
 const now = new Date();
 const iso = now.toISOString();
 const today = iso.slice(0, 10);
@@ -35,21 +26,6 @@ for (const t of tables) {
 console.log('Recreando esquema...');
 const schema = readFileSync(new URL('./schema.sql', import.meta.url), 'utf8');
 await db.batch(schema.split(/;\s*\n/).map(s => s.trim()).filter(Boolean).map(sql => ({ sql, args: [] })));
-
-// 2b. Migraciones ligeras que en la app aplica ensureDb con ALTER
-for (const [table, def] of [
-  ['inventory_items', '"deductOnConsult" INTEGER NOT NULL DEFAULT 0'],
-  ['appointments', '"recipeId" TEXT'],
-  ['organizations', 'currency TEXT'],
-  ['organizations', '"trialEndsAt" TEXT'],
-  ['organizations', 'logo TEXT'],
-]) {
-  try {
-    await db.execute(`ALTER TABLE "${table}" ADD COLUMN ${def}`);
-  } catch {
-    // la columna ya existe
-  }
-}
 
 // 3. Datos demo
 console.log('Sembrando datos demo...');
@@ -103,20 +79,20 @@ for (const [first, last, email, phone, dob] of clientas) {
 
 // Insumos del salón (uno bajo para disparar alerta)
 const insumos = [
-  ['Permante lash 100ml', 'Químicos', 'ml', 45, 20],   // ok
-  ['Fijador lash 60ml', 'Químicos', 'ml', 12, 10],     // warn
-  ['Removedor 30ml', 'Químicos', 'ml', 4, 10],         // crítico
-  ['Cepillos desechables', 'Desechables', 'unidades', 80, 30],
-  ['Parches inferiores', 'Desechables', 'unidades', 60, 30],
+  ['SKU-0001', 'Permante lash 100ml', 'Químicos', 'frasco', 100, 'ml', 45, 20],   // ok
+  ['SKU-0002', 'Fijador lash 60ml', 'Químicos', 'frasco', 60, 'ml', 12, 10],      // warn
+  ['SKU-0003', 'Removedor 30ml', 'Químicos', 'frasco', 30, 'ml', 4, 10],          // crítico
+  ['SKU-0004', 'Cepillos desechables', 'Desechables', 'unidad', 1, 'unidad', 80, 30],
+  ['SKU-0005', 'Parches inferiores', 'Desechables', 'unidad', 1, 'unidad', 60, 30],
 ];
 const insumoIds = [];
-for (const [name, category, unit, stock, min] of insumos) {
+for (const [sku, name, category, unit, packSize, measureUnit, stock, min] of insumos) {
   const id = uuid();
   insumoIds.push(id);
   await db.execute({
-    sql: `INSERT INTO inventory_items (id, "organizationId", name, category, unit, stock, "minStock", cost, "deductOnConsult", "createdAt", "updatedAt")
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)`,
-    args: [id, orgId, name, category, unit, stock, min, 5, iso, iso],
+    sql: `INSERT INTO inventory_items (id, "organizationId", sku, name, category, unit, "packSize", "measureUnit", stock, "minStock", cost, "deductOnConsult", "createdAt", "updatedAt")
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)`,
+    args: [id, orgId, sku, name, category, unit, packSize, measureUnit, stock, min, 5, iso, iso],
   });
 }
 
@@ -194,3 +170,5 @@ Usuarios de prueba (contraseña para todos: demo123):
 Demo: 5 clientas, 4 citas de "Lifting de pestañas" esta semana,
 5 insumos (removedor en crítico, fijador en warn), catálogo con 3 SKUs
 y receta vinculada para la proyección de cobertura.`);
+
+await closeDb();

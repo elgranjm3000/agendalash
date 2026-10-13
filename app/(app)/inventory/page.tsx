@@ -35,10 +35,28 @@ import { formatMoney } from '@/lib/format';
 import { InventoryItem, StockMovementType } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
+// Unidad de compra: lo que se le pide al proveedor
 const UNITS = ['unidad', 'caja', 'frasco', 'paquete', 'sobre', 'ampolla', 'rollo'];
+// Unidad de medida: da sentido a las cantidades de stock y de consumo por servicio
+const MEASURE_UNITS = ['ml', 'l', 'cc', 'oz', 'g', 'mg', 'kg', 'unidad', 'par'];
 const NEW_CATEGORY = '__nueva__';
 const NEW_SUPPLIER = '__nuevo__';
 const todayStr = () => new Date().toISOString().split('T')[0];
+
+/** Contenido de una unidad de compra; nunca 0 para no dividir por cero. */
+const packOf = (item: Pick<InventoryItem, 'packSize'>) => (Number(item.packSize) > 0 ? Number(item.packSize) : 1);
+
+/** Costo por unidad de medida: el costo se declara por unidad de compra (precio del frasco). */
+const costPerMeasure = (item: InventoryItem) =>
+  item.cost === null || item.cost === undefined ? null : Number(item.cost) / packOf(item);
+
+/** Plural simple para las etiquetas de unidad de compra (frasco → frascos). */
+const plural = (word: string, n: number) => {
+  if (Math.abs(n) === 1) return word;
+  if (word === 'unidad') return 'unidades';
+  if (word === 'par') return 'pares';
+  return `${word}s`;
+};
 
 interface InventoryCategory {
   id: string;
@@ -64,6 +82,7 @@ export default function InventoryPage() {
   const [itemDialog, setItemDialog] = useState(false);
   const [editing, setEditing] = useState<InventoryItem | null>(null);
   const [name, setName] = useState('');
+  const [sku, setSku] = useState('');
   const [categories, setCategories] = useState<InventoryCategory[]>([]);
   const [category, setCategory] = useState('');
   const [newCategory, setNewCategory] = useState('');
@@ -73,6 +92,8 @@ export default function InventoryPage() {
   const [newSupplierPhone, setNewSupplierPhone] = useState('');
   const [deductOnConsult, setDeductOnConsult] = useState(false);
   const [unit, setUnit] = useState('unidad');
+  const [packSize, setPackSize] = useState('1');
+  const [measureUnit, setMeasureUnit] = useState('unidad');
   const [stock, setStock] = useState('');
   const [minStock, setMinStock] = useState('');
   const [cost, setCost] = useState('');
@@ -80,6 +101,8 @@ export default function InventoryPage() {
   // dialog de movimiento
   const [moveDialog, setMoveDialog] = useState<InventoryItem | null>(null);
   const [moveType, setMoveType] = useState<StockMovementType>('entrada');
+  // Por defecto la entrada se registra en envases: así llega la compra del proveedor
+  const [moveInPack, setMoveInPack] = useState(true);
   const [moveQty, setMoveQty] = useState('');
   const [moveReason, setMoveReason] = useState('');
   const [saving, setSaving] = useState(false);
@@ -116,7 +139,11 @@ export default function InventoryPage() {
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return items.filter((i) => {
-      const matches = !q || i.name.toLowerCase().includes(q) || i.category?.toLowerCase().includes(q);
+      const matches =
+        !q ||
+        i.name.toLowerCase().includes(q) ||
+        i.sku.toLowerCase().includes(q) ||
+        i.category?.toLowerCase().includes(q);
       const low = lowOnly ? i.stock <= i.minStock : true;
       return matches && low;
     });
@@ -124,19 +151,25 @@ export default function InventoryPage() {
 
   const stats = useMemo(() => {
     const lowCount = items.filter((i) => i.stock <= i.minStock).length;
-    const value = items.reduce((s, i) => s + Number(i.stock) * Number(i.cost ?? 0), 0);
-    return { count: items.length, lowCount, value };
+    // El stock está en unidad de medida y el costo en unidad de compra: hay que pasarlo a la misma escala
+    const value = items.reduce((s, i) => {
+      const perMeasure = costPerMeasure(i);
+      return perMeasure === null ? s : s + Number(i.stock) * perMeasure;
+    }, 0);
+    // Sin costo, el total queda incompleto: mejor decirlo que mostrar un número engañoso
+    const missingCost = items.filter((i) => Number(i.stock) > 0 && (i.cost === null || i.cost === undefined)).length;
+    return { count: items.length, lowCount, value, missingCost };
   }, [items]);
 
   const openNew = () => {
     setEditing(null);
-    setName(''); setCategory(''); setNewCategory(''); setSupplier(''); setNewSupplierName(''); setNewSupplierPhone(''); setDeductOnConsult(false); setUnit('unidad'); setStock(''); setMinStock(''); setCost('');
+    setName(''); setSku(''); setCategory(''); setNewCategory(''); setSupplier(''); setNewSupplierName(''); setNewSupplierPhone(''); setDeductOnConsult(false); setUnit('unidad'); setPackSize('1'); setMeasureUnit('unidad'); setStock(''); setMinStock(''); setCost('');
     setItemDialog(true);
   };
 
   const openEdit = (item: InventoryItem) => {
     setEditing(item);
-    setName(item.name); setCategory(item.category ?? ''); setNewCategory(''); setUnit(item.unit);
+    setName(item.name); setSku(item.sku ?? ''); setCategory(item.category ?? ''); setNewCategory(''); setUnit(item.unit); setPackSize(String(item.packSize ?? 1)); setMeasureUnit(item.measureUnit ?? 'unidad');
     setStock(String(item.stock)); setMinStock(String(item.minStock));
     setCost(item.cost?.toString() ?? ''); setSupplier(item.supplier ?? ''); setNewSupplierName(''); setNewSupplierPhone(''); setDeductOnConsult(Boolean(item.deductOnConsult));
     setItemDialog(true);
@@ -145,6 +178,18 @@ export default function InventoryPage() {
   const handleSaveItem = async () => {
     if (!name.trim()) {
       toast.error('El nombre es obligatorio');
+      return;
+    }
+    if (!sku.trim()) {
+      toast.error('El SKU es obligatorio');
+      return;
+    }
+    if (!measureUnit.trim()) {
+      toast.error('La unidad de medida es obligatoria');
+      return;
+    }
+    if (!(Number(packSize) > 0)) {
+      toast.error('El contenido por unidad de compra debe ser mayor que 0');
       return;
     }
     let finalCategory = category;
@@ -175,8 +220,11 @@ export default function InventoryPage() {
     }
     const data = {
       name: name.trim(),
+      sku: sku.trim(),
       category: finalCategory || undefined,
       unit,
+      packSize: Number(packSize) || 1,
+      measureUnit,
       stock: Number(stock) || 0,
       minStock: Number(minStock) || 0,
       cost: cost ? Number(cost) : null,
@@ -193,8 +241,9 @@ export default function InventoryPage() {
         toast.success('Ítem agregado al inventario');
       }
       setItemDialog(false);
-    } catch {
-      toast.error('No se pudo guardar');
+    } catch (e) {
+      // El servidor devuelve un mensaje claro si el SKU ya existe en el salón
+      toast.error(e instanceof Error ? e.message : 'No se pudo guardar');
     } finally {
       setSaving(false);
     }
@@ -203,6 +252,7 @@ export default function InventoryPage() {
   const openMove = (item: InventoryItem, type: StockMovementType) => {
     setMoveDialog(item);
     setMoveType(type);
+    setMoveInPack(true);
     setMoveQty('');
     setMoveReason('');
   };
@@ -213,7 +263,12 @@ export default function InventoryPage() {
       toast.error('Indica una cantidad válida');
       return;
     }
-    const delta = moveType === 'entrada' ? qty : -qty;
+    // La cantidad puede venir en envases (así llega la compra) o en unidad de medida;
+    // el stock siempre se guarda en unidad de medida.
+    const packSize = packOf(moveDialog);
+    const inPack = moveInPack && packSize > 1;
+    const quantity = inPack ? qty * packSize : qty;
+    const delta = moveType === 'entrada' ? quantity : -quantity;
     const newStock = Number(moveDialog.stock) + delta;
     if (newStock < 0) {
       toast.error('No hay stock suficiente para esa salida');
@@ -226,8 +281,10 @@ export default function InventoryPage() {
           itemId: moveDialog.id,
           itemName: moveDialog.name,
           type: moveType,
-          quantity: qty,
-          reason: moveReason.trim() || undefined,
+          quantity,
+          reason:
+            moveReason.trim() ||
+            (inPack ? `${qty} ${plural(moveDialog.unit, qty)} de ${packSize} ${moveDialog.measureUnit}` : undefined),
           date: todayStr(),
           registeredBy: user ? `${user.firstName} ${user.lastName}` : null,
         },
@@ -298,10 +355,15 @@ export default function InventoryPage() {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className={cn(stats.missingCost > 0 && 'ring-1 ring-amber-300')}>
           <CardContent className="p-5">
             <p className="text-sm font-medium text-gray-600">Valor estimado</p>
             <p className="text-2xl font-bold text-rose-700 tabular-nums">{formatMoney(stats.value, currency)}</p>
+            {stats.missingCost > 0 && (
+              <p className="text-xs text-amber-600 mt-0.5">
+                Parcial · falta el costo de {stats.missingCost} insumo{stats.missingCost === 1 ? '' : 's'}
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -345,6 +407,7 @@ export default function InventoryPage() {
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50 text-left">
                     <th className="py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500">Ítem</th>
+                    <th className="py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500">SKU</th>
                     <th className="py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500">Stock</th>
                     <th className="py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500">Costo unit.</th>
                     <th className="py-3 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500">Proveedor</th>
@@ -354,6 +417,8 @@ export default function InventoryPage() {
                 <tbody>
                   {filtered.map((item) => {
                     const low = item.stock <= item.minStock;
+                    // La reposición se sugiere en envases: es como se le pide al proveedor
+                    const toBuy = Math.ceil((Number(item.minStock) - Number(item.stock)) / packOf(item));
                     return (
                       <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
                         <td className="py-2.5 px-4">
@@ -365,17 +430,26 @@ export default function InventoryPage() {
                               </Badge>
                             )}
                           </p>
-                          <p className="text-xs text-gray-500">{item.category || '—'}</p>
+                          <p className="text-xs text-gray-500">
+                            {[
+                              item.category,
+                              packOf(item) > 1 ? `${item.unit} de ${packOf(item)} ${item.measureUnit}` : item.unit,
+                            ]
+                              .filter(Boolean)
+                              .join(' · ') || '—'}
+                          </p>
                         </td>
+                        <td className="py-2.5 px-4 font-mono text-xs text-gray-600 whitespace-nowrap">{item.sku}</td>
                         <td className="py-2.5 px-4">
                           <Badge
                             className={cn(
                               low ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'
                             )}
                           >
-                            {item.stock} {item.unit}{low && ' · reponer'}
+                            {item.stock} {item.measureUnit}
+                            {low && ` · faltan ${toBuy} ${plural(item.unit, toBuy)}`}
                           </Badge>
-                          <p className="text-xs text-gray-400 mt-0.5">mín: {item.minStock}</p>
+                          <p className="text-xs text-gray-400 mt-0.5">mín: {item.minStock} {item.measureUnit}</p>
                         </td>
                         <td className="py-2.5 px-4 tabular-nums text-gray-600">
                           {item.cost ? formatMoney(item.cost, currency) : '—'}
@@ -448,20 +522,32 @@ export default function InventoryPage() {
 
       {/* Dialog ítem */}
       <Dialog open={itemDialog} onOpenChange={setItemDialog}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-xl">
           <DialogHeader>
             <DialogTitle>{editing ? 'Editar ítem' : 'Nuevo ítem de inventario'}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="i-name">Nombre</Label>
-              <Input id="i-name" placeholder="Ej: Guantes de nitrilo (talla M)" value={name} onChange={(e) => setName(e.target.value)} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="i-sku">SKU <span className="text-rose-600">*</span></Label>
+                <Input
+                  id="i-sku"
+                  placeholder="Ej: LFT-PERM-100"
+                  className="font-mono"
+                  value={sku}
+                  onChange={(e) => setSku(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="i-name">Nombre <span className="text-rose-600">*</span></Label>
+                <Input id="i-name" placeholder="Ej: Permante lash 100ml" value={name} onChange={(e) => setName(e.target.value)} />
+              </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label>Categoría</Label>
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger><SelectValue placeholder="Selecciona una categoría" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Categoría" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">Sin categoría</SelectItem>
                     {categories.map((c) => (
@@ -480,7 +566,7 @@ export default function InventoryPage() {
                 )}
               </div>
               <div className="space-y-2">
-                <Label>Unidad</Label>
+                <Label>Unidad de compra</Label>
                 <Select value={unit} onValueChange={setUnit}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -488,52 +574,81 @@ export default function InventoryPage() {
                   </SelectContent>
                 </Select>
               </div>
+              <div className="space-y-2">
+                <Label>Unidad de medida <span className="text-rose-600">*</span></Label>
+                <Select value={measureUnit} onValueChange={setMeasureUnit}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {MEASURE_UNITS.map((u) => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="i-stock">Stock actual</Label>
+                <Label htmlFor="i-pack">Contenido por unidad de compra</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="i-pack"
+                    type="number"
+                    min="1"
+                    step="0.1"
+                    inputMode="decimal"
+                    value={packSize}
+                    onChange={(e) => setPackSize(e.target.value)}
+                  />
+                  <span className="text-sm text-gray-500 shrink-0">{measureUnit} por {unit}</span>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="i-cost">Costo por {unit}</Label>
+                <Input id="i-cost" type="number" step="0.01" inputMode="decimal" value={cost} onChange={(e) => setCost(e.target.value)} />
+                {Number(packSize) > 1 && Number(cost) > 0 && (
+                  <p className="text-xs text-gray-500">
+                    ≈ {formatMoney(Number(cost) / Number(packSize), currency)} por {measureUnit}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="i-stock">Stock actual ({measureUnit})</Label>
                 <Input id="i-stock" type="number" inputMode="decimal" value={stock} onChange={(e) => setStock(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="i-min">Stock mínimo (reposición)</Label>
+                <Label htmlFor="i-min">Stock mínimo ({measureUnit})</Label>
                 <Input id="i-min" type="number" inputMode="decimal" value={minStock} onChange={(e) => setMinStock(e.target.value)} />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="i-cost">Costo unitario</Label>
-                <Input id="i-cost" type="number" step="0.01" inputMode="decimal" value={cost} onChange={(e) => setCost(e.target.value)} />
-              </div>
-              <div className="space-y-2">
-                <Label>Proveedor</Label>
-                <Select value={supplier} onValueChange={setSupplier}>
-                  <SelectTrigger><SelectValue placeholder="Selecciona un proveedor" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Sin proveedor</SelectItem>
-                    {suppliers.map((s) => (
-                      <SelectItem key={s.id} value={s.name}>
-                        {s.name}{s.phone ? ` · ${s.phone}` : ''}
-                      </SelectItem>
-                    ))}
-                    <SelectItem value={NEW_SUPPLIER}>+ Nuevo proveedor…</SelectItem>
-                  </SelectContent>
-                </Select>
-                {supplier === NEW_SUPPLIER && (
-                  <div className="grid grid-cols-2 gap-2">
-                    <Input
-                      autoFocus
-                      placeholder="Nombre del proveedor"
-                      value={newSupplierName}
-                      onChange={(e) => setNewSupplierName(e.target.value)}
-                    />
-                    <Input
-                      placeholder="Teléfono (opcional)"
-                      value={newSupplierPhone}
-                      onChange={(e) => setNewSupplierPhone(e.target.value)}
-                    />
-                  </div>
-                )}
-              </div>
+            <div className="space-y-2">
+              <Label>Proveedor</Label>
+              <Select value={supplier} onValueChange={setSupplier}>
+                <SelectTrigger><SelectValue placeholder="Selecciona un proveedor" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Sin proveedor</SelectItem>
+                  {suppliers.map((s) => (
+                    <SelectItem key={s.id} value={s.name}>
+                      {s.name}{s.phone ? ` · ${s.phone}` : ''}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value={NEW_SUPPLIER}>+ Nuevo proveedor…</SelectItem>
+                </SelectContent>
+              </Select>
+              {supplier === NEW_SUPPLIER && (
+                <div className="grid grid-cols-2 gap-2">
+                  <Input
+                    autoFocus
+                    placeholder="Nombre del proveedor"
+                    value={newSupplierName}
+                    onChange={(e) => setNewSupplierName(e.target.value)}
+                  />
+                  <Input
+                    placeholder="Teléfono (opcional)"
+                    value={newSupplierPhone}
+                    onChange={(e) => setNewSupplierPhone(e.target.value)}
+                  />
+                </div>
+              )}
             </div>
             <label className="flex items-start gap-2.5 rounded-md border border-gray-200 p-3 cursor-pointer">
               <input
@@ -570,11 +685,34 @@ export default function InventoryPage() {
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-gray-500">
-              Stock actual: <strong className="text-gray-900">{moveDialog?.stock} {moveDialog?.unit}</strong>
+              Stock actual: <strong className="text-gray-900">{moveDialog?.stock} {moveDialog?.measureUnit}</strong>
             </p>
+            {moveDialog && packOf(moveDialog) > 1 && (
+              <div className="space-y-2">
+                <Label>Registrar en</Label>
+                <Select value={moveInPack ? 'pack' : 'measure'} onValueChange={(v) => setMoveInPack(v === 'pack')}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pack">{moveDialog.unit} ({packOf(moveDialog)} {moveDialog.measureUnit})</SelectItem>
+                    <SelectItem value="measure">{moveDialog.measureUnit}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             <div className="space-y-2">
-              <Label htmlFor="m-qty">Cantidad</Label>
+              <Label htmlFor="m-qty">
+                Cantidad ({moveDialog && moveInPack && packOf(moveDialog) > 1 ? moveDialog.unit : moveDialog?.measureUnit})
+              </Label>
               <Input id="m-qty" type="number" inputMode="decimal" value={moveQty} onChange={(e) => setMoveQty(e.target.value)} />
+              {moveDialog && moveInPack && packOf(moveDialog) > 1 && Number(moveQty) > 0 && (
+                <p className="text-xs text-gray-500">
+                  {moveQty} {plural(moveDialog.unit, Number(moveQty))} = {Number(moveQty) * packOf(moveDialog)} {moveDialog.measureUnit}
+                  {' · '}
+                  {moveType === 'entrada' ? 'nuevo stock' : 'stock restante'}:{' '}
+                  {Number(moveDialog.stock) + (moveType === 'entrada' ? 1 : -1) * Number(moveQty) * packOf(moveDialog)}{' '}
+                  {moveDialog.measureUnit}
+                </p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="m-reason">Motivo</Label>

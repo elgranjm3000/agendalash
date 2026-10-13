@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   const limit = Math.min(Number(url.searchParams.get('limit')) || 300, 1000);
 
   const filters: string[] = [];
-  const args: string[] = [];
+  const args: (string | number)[] = [];
   if (action) {
     filters.push('action = ?');
     args.push(action);
@@ -33,7 +33,7 @@ export async function GET(request: Request) {
     sql: `SELECT id, ts, "userId", "userEmail", "userName", "organizationId", action, entity, "entityId", detail, ip
           FROM audit_log ${filters.length ? 'WHERE ' + filters.join(' AND ') : ''}
           ORDER BY ts DESC LIMIT ?`,
-    args: [...args, String(limit)],
+    args: [...args, limit],
   });
 
   return NextResponse.json(result.rows.map(r => ({ ...r })));

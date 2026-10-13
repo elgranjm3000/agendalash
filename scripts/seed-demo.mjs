@@ -1,19 +1,6 @@
-// Datos de demostración para MediControl.
-// Uso: node scripts/seed-demo.mjs
-// Solo siembra si la organización principal tiene menos de 3 pacientes (idempotente).
-
-import { createClient } from '@libsql/client';
-import { readFileSync } from 'node:fs';
+import { db, closeDb } from './pg.mjs';
 import { randomUUID } from 'node:crypto';
 
-const env = Object.fromEntries(
-  readFileSync(new URL('../.env.local', import.meta.url), 'utf8')
-    .split('\n')
-    .filter((l) => l.includes('=') && !l.trim().startsWith('#'))
-    .map((l) => [l.slice(0, l.indexOf('=')).trim(), l.slice(l.indexOf('=') + 1).trim()])
-);
-
-const db = createClient({ url: env.TURSO_DATABASE_URL, authToken: env.TURSO_AUTH_TOKEN });
 const now = new Date();
 const iso = now.toISOString();
 const today = iso.slice(0, 10);
@@ -141,20 +128,20 @@ for (const name of sups) {
   });
 }
 const items = [
-  ['Guantes de nitrilo (talla M)', 'EPP', 'caja', 24, 10, 8.5, 'Distribuidora Farma C.A.', 1],
-  ['Jeringa desechable 5ml', 'Inyección', 'paquete', 60, 20, 3.2, 'Suministros Médicos del Centro', 1],
-  ['Algodón 500g', 'EPP', 'paquete', 8, 10, 4.0, 'Suministros Médicos del Centro', 0],
-  ['Paracetamol 500mg (caja)', 'Medicamentos', 'caja', 35, 15, 2.75, 'Distribuidora Farma C.A.', 0],
-  ['Suero fisiológico 500ml', 'Medicamentos', 'frasco', 18, 12, 1.9, 'Distribuidora Farma C.A.', 0],
+  ['SKU-0001', 'Guantes de nitrilo (talla M)', 'EPP', 'caja', 100, 'unidad', 24, 10, 8.5, 'Distribuidora Farma C.A.', 1],
+  ['SKU-0002', 'Jeringa desechable 5ml', 'Inyección', 'paquete', 20, 'unidad', 60, 20, 3.2, 'Suministros Médicos del Centro', 1],
+  ['SKU-0003', 'Algodón 500g', 'EPP', 'paquete', 500, 'g', 8, 10, 4.0, 'Suministros Médicos del Centro', 0],
+  ['SKU-0004', 'Paracetamol 500mg (caja)', 'Medicamentos', 'caja', 1, 'unidad', 35, 15, 2.75, 'Distribuidora Farma C.A.', 0],
+  ['SKU-0005', 'Suero fisiológico 500ml', 'Medicamentos', 'frasco', 500, 'ml', 18, 12, 1.9, 'Distribuidora Farma C.A.', 0],
 ];
 const itemIds = [];
-for (const [name, cat, unit, stock, min, cost, sup, cons] of items) {
+for (const [sku, name, cat, unit, packSize, measureUnit, stock, min, cost, sup, cons] of items) {
   const id = uid();
   itemIds.push({ id, name, stock });
   await db.execute({
-    sql: `INSERT INTO inventory_items (id, "organizationId", name, category, unit, stock, "minStock", cost, supplier, "deductOnConsult", "createdAt", "updatedAt")
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [id, orgId, name, cat, unit, stock, min, cost, sup, cons, iso, iso],
+    sql: `INSERT INTO inventory_items (id, "organizationId", sku, name, category, unit, "packSize", "measureUnit", stock, "minStock", cost, supplier, "deductOnConsult", "createdAt", "updatedAt")
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [id, orgId, sku, name, cat, unit, packSize, measureUnit, stock, min, cost, sup, cons, iso, iso],
   });
 }
 // Movimientos de ejemplo
@@ -206,4 +193,5 @@ for (const [pi, status, method, rows] of money) {
   }
 }
 
+await closeDb();
 console.log('Datos de demostración sembrados: 8 pacientes, 9 citas, 3 historias, 1 receta, 5 ítems, 2 facturas, caja del día.');

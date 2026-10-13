@@ -28,7 +28,7 @@ function RecipeForm({
   onCancel,
 }: {
   recipe?: TreatmentRecipe;
-  inventory: { id: string; name: string; unit: string }[];
+  inventory: { id: string; name: string; unit: string; measureUnit: string }[];
   onSubmit: (data: Omit<TreatmentRecipe, 'id' | 'createdAt' | 'updatedAt'>) => Promise<unknown>;
   onCancel: () => void;
 }) {
@@ -114,7 +114,7 @@ function RecipeForm({
                   onChange={e => updateItem(idx, { quantityPerService: Number(e.target.value) })}
                 />
                 <span className="w-14 text-xs text-muted-foreground shrink-0">
-                  {item?.unit ?? ''}
+                  {item?.measureUnit ?? ''}
                 </span>
                 <Button
                   variant="ghost"
@@ -204,7 +204,10 @@ export default function RecetasPage() {
         </Card>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {recipes.map(r => (
+          {recipes.map(r => {
+            // Una receta sin `items` (respuesta incompleta de la API) no debe tumbar la página
+            const recipeItems = Array.isArray(r.items) ? r.items : [];
+            return (
             <Card key={r.id}>
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center justify-between text-base font-semibold">
@@ -219,16 +222,16 @@ export default function RecetasPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <ul className="space-y-1 text-sm">
-                  {r.items.length === 0 && (
+                  {recipeItems.length === 0 && (
                     <li className="text-muted-foreground">{t('recipes.noItems')}</li>
                   )}
-                  {r.items.map((it, idx) => {
+                  {recipeItems.map((it, idx) => {
                     const inv = inventory.find(i => i.id === it.inventoryItemId);
                     return (
                       <li key={idx} className="flex justify-between gap-2">
                         <span className="truncate">{inv?.name ?? '—'}</span>
                         <span className="tabular-nums text-muted-foreground shrink-0">
-                          {it.quantityPerService} {inv?.unit ?? ''}
+                          {it.quantityPerService} {inv?.measureUnit ?? ''}
                         </span>
                       </li>
                     );
@@ -244,7 +247,8 @@ export default function RecetasPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
         </div>
       )}
 

@@ -30,7 +30,8 @@ export const COVERAGE_THRESHOLD_DAYS = 7;
 export async function coverageForOrg(orgId: string): Promise<CoverageRow[]> {
   // Stock por insumo del salón
   const items = await db.execute({
-    sql: `SELECT id, name, unit, stock, "minStock" FROM inventory_items WHERE "organizationId" = ?`,
+    // El stock y el consumo se expresan en la unidad de medida, no en el envase
+    sql: `SELECT id, name, "measureUnit" AS unit, stock, "minStock" FROM inventory_items WHERE "organizationId" = ?`,
     args: [orgId],
   });
   // Uso proyectado por insumo: recetas activas del salón
