@@ -246,6 +246,8 @@ export function ensureDb(): Promise<void> {
           "createdAt" TEXT NOT NULL,
           "updatedAt" TEXT NOT NULL
         )`,
+        // Un nombre por organización: sin este índice la precarga (y la UI) podían duplicarlos
+        `CREATE UNIQUE INDEX IF NOT EXISTS idx_inventory_categories_name ON inventory_categories ("organizationId", lower(name))`,
         `CREATE TABLE IF NOT EXISTS suppliers (
           id TEXT PRIMARY KEY,
           "organizationId" TEXT,
@@ -255,6 +257,7 @@ export function ensureDb(): Promise<void> {
           "createdAt" TEXT NOT NULL,
           "updatedAt" TEXT NOT NULL
         )`,
+        `CREATE UNIQUE INDEX IF NOT EXISTS idx_suppliers_name ON suppliers ("organizationId", lower(name))`,
         `CREATE TABLE IF NOT EXISTS stock_movements (
           id TEXT PRIMARY KEY,
           "organizationId" TEXT,
@@ -315,24 +318,34 @@ export function ensureDb(): Promise<void> {
 
       // Migración de datos: org por defecto + roles
       const now = new Date().toISOString();
-      // Precarga: categorías ya usadas en ítems existentes
+      // Precarga: categorías ya usadas en ítems existentes.
+      // El DISTINCT ON no es opcional: el NOT EXISTS se evalúa contra la foto previa a la
+      // sentencia, así que sin él cada ítem con la misma categoría insertaría su propia fila.
       await db.execute(`INSERT INTO inventory_categories (id, "organizationId", name, "createdAt", "updatedAt")
-        SELECT md5(random()::text || clock_timestamp()::text), i."organizationId", i.category, ?, ?
-        FROM inventory_items i
-        WHERE i.category IS NOT NULL AND i.category != ''
-          AND NOT EXISTS (
-            SELECT 1 FROM inventory_categories c
-            WHERE c."organizationId" IS NOT DISTINCT FROM i."organizationId" AND lower(c.name) = lower(i.category)
-          )`, [now, now]);
-      // Precarga: proveedores ya usados en ítems existentes
+        SELECT md5(random()::text || clock_timestamp()::text), src."organizationId", src.name, ?, ?
+        FROM (
+          SELECT DISTINCT ON (i."organizationId", lower(i.category)) i."organizationId", i.category AS name
+          FROM inventory_items i
+          WHERE i.category IS NOT NULL AND i.category != ''
+          ORDER BY i."organizationId", lower(i.category), i.category
+        ) src
+        WHERE NOT EXISTS (
+          SELECT 1 FROM inventory_categories c
+          WHERE c."organizationId" IS NOT DISTINCT FROM src."organizationId" AND lower(c.name) = lower(src.name)
+        )`, [now, now]);
+      // Precarga: proveedores ya usados en ítems existentes (mismo caso)
       await db.execute(`INSERT INTO suppliers (id, "organizationId", name, "createdAt", "updatedAt")
-        SELECT md5(random()::text || clock_timestamp()::text), i."organizationId", i.supplier, ?, ?
-        FROM inventory_items i
-        WHERE i.supplier IS NOT NULL AND i.supplier != ''
-          AND NOT EXISTS (
-            SELECT 1 FROM suppliers s
-            WHERE s."organizationId" IS NOT DISTINCT FROM i."organizationId" AND lower(s.name) = lower(i.supplier)
-          )`, [now, now]);
+        SELECT md5(random()::text || clock_timestamp()::text), src."organizationId", src.name, ?, ?
+        FROM (
+          SELECT DISTINCT ON (i."organizationId", lower(i.supplier)) i."organizationId", i.supplier AS name
+          FROM inventory_items i
+          WHERE i.supplier IS NOT NULL AND i.supplier != ''
+          ORDER BY i."organizationId", lower(i.supplier), i.supplier
+        ) src
+        WHERE NOT EXISTS (
+          SELECT 1 FROM suppliers s
+          WHERE s."organizationId" IS NOT DISTINCT FROM src."organizationId" AND lower(s.name) = lower(src.name)
+        )`, [now, now]);
       const orgResult = await db.execute('SELECT id FROM organizations LIMIT 1');
       let defaultOrgId: string;
       if (orgResult.rows.length === 0) {

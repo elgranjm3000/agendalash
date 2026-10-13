@@ -184,6 +184,8 @@ CREATE TABLE IF NOT EXISTS inventory_categories (
           "updatedAt" TEXT NOT NULL
         );
 
+CREATE UNIQUE INDEX IF NOT EXISTS idx_inventory_categories_name ON inventory_categories ("organizationId", lower(name));
+
 CREATE TABLE IF NOT EXISTS suppliers (
           id TEXT PRIMARY KEY,
           "organizationId" TEXT,
@@ -193,6 +195,8 @@ CREATE TABLE IF NOT EXISTS suppliers (
           "createdAt" TEXT NOT NULL,
           "updatedAt" TEXT NOT NULL
         );
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_suppliers_name ON suppliers ("organizationId", lower(name));
 
 CREATE TABLE IF NOT EXISTS stock_movements (
           id TEXT PRIMARY KEY,

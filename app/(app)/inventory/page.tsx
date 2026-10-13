@@ -117,23 +117,42 @@ export default function InventoryPage() {
   }, []);
 
   const ensureCategory = async (name: string): Promise<string> => {
-    const existing = categories.find((c) => c.name.toLowerCase() === name.trim().toLowerCase());
+    const wanted = name.trim();
+    const existing = categories.find((c) => c.name.toLowerCase() === wanted.toLowerCase());
     if (existing) return existing.name;
-    const created = await apiCreate<InventoryCategory>('inventory-categories', { name: name.trim() });
-    setCategories((prev) => [...prev, created].sort((a, b) => a.name.localeCompare(b.name)));
-    return created.name;
+    try {
+      const created = await apiCreate<InventoryCategory>('inventory-categories', { name: wanted });
+      setCategories((prev) => [...prev, created].sort((a, b) => a.name.localeCompare(b.name)));
+      return created.name;
+    } catch (e) {
+      // El nombre es único por organización: si otra pestaña la creó primero, se reutiliza
+      const list = await apiList<InventoryCategory>('inventory-categories').catch(() => []);
+      setCategories([...list].sort((a, b) => a.name.localeCompare(b.name)));
+      const found = list.find((c) => c.name.toLowerCase() === wanted.toLowerCase());
+      if (found) return found.name;
+      throw e;
+    }
   };
 
   const ensureSupplier = async (name: string): Promise<string> => {
-    const existing = suppliers.find((s) => s.name.toLowerCase() === name.trim().toLowerCase());
+    const wanted = name.trim();
+    const existing = suppliers.find((s) => s.name.toLowerCase() === wanted.toLowerCase());
     if (existing) return existing.name;
-    const created = await apiCreate<Supplier>('suppliers', {
-      name: name.trim(),
-      phone: newSupplierPhone.trim() || null,
-      email: null,
-    });
-    setSuppliers((prev) => [...prev, created].sort((a, b) => a.name.localeCompare(b.name)));
-    return created.name;
+    try {
+      const created = await apiCreate<Supplier>('suppliers', {
+        name: wanted,
+        phone: newSupplierPhone.trim() || null,
+        email: null,
+      });
+      setSuppliers((prev) => [...prev, created].sort((a, b) => a.name.localeCompare(b.name)));
+      return created.name;
+    } catch (e) {
+      const list = await apiList<Supplier>('suppliers').catch(() => []);
+      setSuppliers([...list].sort((a, b) => a.name.localeCompare(b.name)));
+      const found = list.find((s) => s.name.toLowerCase() === wanted.toLowerCase());
+      if (found) return found.name;
+      throw e;
+    }
   };
 
   const filtered = useMemo(() => {

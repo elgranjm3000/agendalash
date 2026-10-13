@@ -513,12 +513,16 @@ export const inventoryCategoriesConfig: EntityConfig = {
   table: 'inventory_categories',
   columns: ['id', 'organizationId', 'name', 'createdAt', 'updatedAt'],
   tenant: true,
+  requiredFields: { name: 'Nombre' },
+  uniqueConflictMessage: 'Ya existe una categoría con ese nombre en tu salón',
 };
 
 export const suppliersConfig: EntityConfig = {
   table: 'suppliers',
   columns: ['id', 'organizationId', 'name', 'phone', 'email', 'createdAt', 'updatedAt'],
   tenant: true,
+  requiredFields: { name: 'Nombre' },
+  uniqueConflictMessage: 'Ya existe un proveedor con ese nombre en tu salón',
 };
 
 export const organizationsConfig: EntityConfig = {

@@ -108,23 +108,18 @@ await db.execute({
 
 // --- Inventario: categorías, proveedores, ítems ---
 const cats = ['EPP', 'Inyección', 'Medicamentos'];
-const catIds = {};
 for (const name of cats) {
-  const id = uid();
-  catIds[name] = id;
+  // ON CONFLICT: el nombre es único por organización, así que re-sembrar no duplica
   await db.execute({
-    sql: `INSERT INTO inventory_categories (id, "organizationId", name, "createdAt", "updatedAt") VALUES (?, ?, ?, ?, ?)`,
-    args: [id, orgId, name, iso, iso],
+    sql: `INSERT INTO inventory_categories (id, "organizationId", name, "createdAt", "updatedAt") VALUES (?, ?, ?, ?, ?) ON CONFLICT DO NOTHING`,
+    args: [uid(), orgId, name, iso, iso],
   });
 }
 const sups = ['Distribuidora Farma C.A.', 'Suministros Médicos del Centro'];
-const supIds = {};
 for (const name of sups) {
-  const id = uid();
-  supIds[name] = id;
   await db.execute({
-    sql: `INSERT INTO suppliers (id, "organizationId", name, phone, email, "createdAt", "updatedAt") VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    args: [id, orgId, name, '0212-5559988', 'ventas@farma.com', iso, iso],
+    sql: `INSERT INTO suppliers (id, "organizationId", name, phone, email, "createdAt", "updatedAt") VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING`,
+    args: [uid(), orgId, name, '0212-5559988', 'ventas@farma.com', iso, iso],
   });
 }
 const items = [
